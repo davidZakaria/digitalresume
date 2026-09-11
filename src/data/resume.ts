@@ -52,13 +52,13 @@ export const resume = {
   title: 'Full-Stack Software Engineer',
   /** Short elevator pitch */
   summary:
-    'I design and ship production web applications across HR operations, hospitality booking, cultural archives, and education — from MongoDB data models and Express APIs to polished React and Next.js interfaces.',
+    'I design and ship production web applications across real-estate enterprise systems, HR operations, hospitality booking, cultural archives, and education — from PostgreSQL and Prisma backends to polished React and Next.js interfaces.',
   location: 'Open to remote roles',
   contact: {
     /** Set your public email for mailto links */
     email: '',
     github: 'https://github.com/davidZakaria',
-    linkedin: '',
+    linkedin: 'https://www.linkedin.com/in/david-zakaria/',
   },
   experience: [
     {
@@ -82,6 +82,7 @@ export const resume = {
       location: 'Egypt',
       highlights: [
         'Own the public web presence for a real-estate development group — njdegypt.com — including project storytelling, brand pages, and performance-conscious delivery.',
+        'Build and maintain production internal systems — post-sales CRM, broker relationship management, legal operations ERP, and engineering workflows — on Next.js, Prisma, and PostgreSQL.',
         'Translate business and marketing needs into a maintainable site structure, content hierarchy, and deployment workflow stakeholders can update over time.',
         'Ship iterative improvements across SEO, accessibility, and reliability so property launches and corporate updates reach clients without friction.',
       ],
@@ -106,7 +107,7 @@ export const resume = {
     },
     {
       label: 'Backend & data',
-      items: ['Node.js', 'Express', 'REST APIs', 'MongoDB', 'JWT'],
+      items: ['Node.js', 'Express', 'NestJS', 'REST APIs', 'PostgreSQL', 'Prisma', 'MongoDB', 'JWT'],
     },
     {
       label: 'Platform & tooling',
@@ -115,6 +116,45 @@ export const resume = {
   ] satisfies SkillGroup[],
   /** Featured portfolio — same list drives the Projects section on the site */
   projects: [
+    {
+      title: 'NJD Post-Sales CRM',
+      description:
+        'Enterprise real-estate post-sales and customer-service CRM with bilingual Arabic RTL / English LTR UI, RBAC, mandatory 2FA, audit logging, bulk Excel import, and automated backups.',
+      repoUrl: 'https://github.com/davidZakaria/Cs-njd',
+      liveUrl: 'https://njd-crm.com/',
+      stack: ['Next.js', 'TypeScript', 'PostgreSQL', 'Prisma', 'NextAuth', 'next-intl'],
+    },
+    {
+      title: 'Sales Arena (BRM)',
+      description:
+        'Broker Relationship Management for agency relationships, compliance data, and Open Race assignments under an Operations-led pipeline from draft through verified status.',
+      repoUrl: 'https://github.com/davidZakaria/sales-arena',
+      liveUrl: 'https://sales-arena.duckdns.org',
+      stack: ['Next.js', 'TypeScript', 'Prisma', 'NextAuth', 'shadcn/ui'],
+    },
+    {
+      title: 'Legal ERP',
+      description:
+        'Legal and corporate operations ERP for the real-estate group: lawsuit and prosecution tracking, court sessions, legal notices, contracts, GAFI compliance, subsidiary governance, and automated backups.',
+      repoUrl: 'https://github.com/davidZakaria/Legal-erp',
+      liveUrl: 'https://legal-njd.com/',
+      stack: ['Next.js', 'TypeScript', 'PostgreSQL', 'Prisma', 'NextAuth', 'next-intl'],
+    },
+    {
+      title: 'Eng ERP (Eng-NJD)',
+      description:
+        'Engineering real-estate ERP monorepo for Egypt development workflows — consultant model submissions, BOQ, site execution logs, variance reporting, version control, and encrypted backups.',
+      repoUrl: 'https://github.com/davidZakaria/eng-erp',
+      liveUrl: 'https://eng-njd.duckdns.org',
+      stack: ['NestJS', 'Next.js', 'PostgreSQL', 'Prisma', 'MinIO'],
+    },
+    {
+      title: 'Backstage',
+      description:
+        'Bilingual EN/AR furniture e-commerce with an editorial storefront, customer account area, and JWT-protected admin for catalog, orders, content, and site settings.',
+      repoUrl: 'https://github.com/davidZakaria/backstage',
+      stack: ['Next.js', 'Prisma', 'PostgreSQL', 'next-intl', 'Supabase'],
+    },
     {
       title: 'HR ERP',
       description:
