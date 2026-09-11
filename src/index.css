@@ -7,19 +7,20 @@
 @layer base {
   :root {
     color-scheme: light;
+    --page-bg: 250 247 242;
     --canvas: 10 10 10;
-    --surface: 244 239 230;
+    --surface: 255 255 255;
     --surface-elevated: 255 255 255;
-    --surface-muted: 237 232 220;
+    --surface-muted: 244 239 230;
     --surface-border: rgba(10, 10, 10, 0.12);
     --cream: 244 239 230;
-    --cream-muted: 237 232 220;
-    --accent: 212 165 116;
-    --accent-bright: 74 222 128;
-    --accent-muted: rgba(212, 165, 116, 0.14);
-    --accent-soft: rgba(74, 222, 128, 0.08);
-    --pop: 244 114 182;
-    --pop-bright: 248 113 113;
+    --cream-muted: 232 225 210;
+    --accent: 180 130 70;
+    --accent-bright: 34 139 84;
+    --accent-muted: rgba(180, 130, 70, 0.14);
+    --accent-soft: rgba(34, 139, 84, 0.08);
+    --pop: 190 80 120;
+    --pop-bright: 200 70 70;
     --ink: 10 10 10;
     --ink-soft: 38 38 38;
     --ink-faint: 82 82 82;
@@ -32,12 +33,13 @@
     --hero-ring-2: rgba(10, 10, 10, 0.18);
     --hero-ring-inset: rgba(255, 255, 255, 0.9);
     --bg-grid-line: rgba(10, 10, 10, 0.06);
-    --initials-hover-glow: radial-gradient(circle at 50% 50%, rgba(212, 165, 116, 0.18), transparent 70%);
+    --initials-hover-glow: radial-gradient(circle at 50% 50%, rgba(180, 130, 70, 0.18), transparent 70%);
     --divider: rgba(10, 10, 10, 0.14);
   }
 
   .dark {
     color-scheme: dark;
+    --page-bg: 10 10 10;
     --canvas: 10 10 10;
     --surface: 10 10 10;
     --surface-elevated: 18 18 18;
@@ -86,7 +88,7 @@
   }
 
   body {
-    @apply bg-canvas font-sans text-ink-soft antialiased;
+    @apply bg-page font-sans text-ink-soft antialiased;
   }
 
   ::selection {
@@ -119,23 +121,40 @@
   }
 
   .section-cream {
-    @apply bg-cream text-canvas;
+    @apply bg-cream;
     --ink: 10 10 10;
     --ink-soft: 38 38 38;
     --ink-faint: 82 82 82;
     --surface-border: rgba(10, 10, 10, 0.12);
     --divider: rgba(10, 10, 10, 0.14);
     --bg-grid-line: rgba(10, 10, 10, 0.06);
+    color: rgb(var(--ink));
   }
 
   .section-canvas {
-    @apply bg-canvas text-cream;
+    --ink: 10 10 10;
+    --ink-soft: 38 38 38;
+    --ink-faint: 82 82 82;
+    --surface-border: rgba(10, 10, 10, 0.12);
+    --divider: rgba(10, 10, 10, 0.14);
+    --bg-grid-line: rgba(10, 10, 10, 0.06);
+    --cream: 160 120 60;
+    --canvas: 237 232 220;
+    background-color: rgb(var(--surface-elevated));
+    color: rgb(var(--ink));
+  }
+
+  .dark .section-canvas {
+    @apply bg-canvas;
     --ink: 244 239 230;
     --ink-soft: 214 209 198;
     --ink-faint: 163 163 163;
     --surface-border: rgba(244, 239, 230, 0.1);
     --divider: rgba(244, 239, 230, 0.12);
     --bg-grid-line: rgba(244, 239, 230, 0.05);
+    --cream: 244 239 230;
+    --canvas: 10 10 10;
+    color: rgb(var(--cream));
   }
 
   .vertical-label {

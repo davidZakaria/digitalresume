@@ -34,13 +34,14 @@ export function AboutSection() {
               viewport={{ once: true, margin: '-10%' }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div
-                className="flex h-56 w-44 items-end justify-center overflow-hidden border border-surface-border bg-surface-muted/40 md:h-72 md:w-52"
-                aria-hidden
-              >
-                <span className="font-display text-[5.5rem] font-black leading-none text-cream/10 md:text-[7rem]">
-                  DS
-                </span>
+              <div className="h-56 w-44 overflow-hidden border border-surface-border md:h-72 md:w-52">
+                <img
+                  src="/david-portrait.png"
+                  alt="David Samy"
+                  className="h-full w-full object-cover object-[center_12%]"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
             </motion.div>
 
