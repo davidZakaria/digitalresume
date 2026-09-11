@@ -29,9 +29,9 @@ export function ContactSection() {
           <div className="flex flex-col gap-12 md:flex-row md:items-end md:justify-between">
             <SectionHeading
               kicker="Contact"
-              title="Let's build."
+              title="Let's talk about what you're building next."
               editorial
-              subtitle="Open to remote full-stack roles. GitHub is always on — add an email in resume.ts when you want a direct line."
+              subtitle="GitHub is always on — add an email in resume.ts when you want a direct line."
             />
             <CircularStamp className="hidden text-ink md:flex" />
           </div>
@@ -41,7 +41,7 @@ export function ContactSection() {
           {email ? (
             <a
               href={`mailto:${email}`}
-              className="inline-flex border border-surface-border px-6 py-3 text-sm font-semibold uppercase tracking-wider text-ink transition hover:border-accent hover:text-accent"
+              className="inline-flex border border-surface-border px-6 py-3 text-sm font-semibold text-ink transition hover:border-accent hover:text-accent"
             >
               Email · {email}
             </a>
@@ -54,16 +54,16 @@ export function ContactSection() {
             href={github}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex border border-ink bg-ink px-6 py-3 text-sm font-semibold uppercase tracking-wider text-canvas transition hover:bg-ink/90 print:bg-zinc-900 print:text-white"
+            className="inline-flex border border-ink bg-ink px-6 py-3 text-sm font-semibold text-cream transition hover:bg-ink/90 print:bg-zinc-900 print:text-white"
           >
-            GitHub
+            GitHub profile
           </a>
           <button
             type="button"
             onClick={() => void copyGithub()}
-            className="inline-flex border border-surface-border px-6 py-3 text-sm font-semibold uppercase tracking-wider text-ink transition hover:border-accent no-print"
+            className="inline-flex border border-surface-border px-6 py-3 text-sm font-semibold text-ink transition hover:border-accent no-print"
           >
-            {copied ? 'Copied' : 'Copy URL'}
+            {copied ? 'Copied link' : 'Copy GitHub URL'}
           </button>
           <span className="sr-only" aria-live="polite">
             {copied ? 'GitHub profile URL copied to clipboard' : ''}
@@ -73,16 +73,12 @@ export function ContactSection() {
               href={linkedin}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex border border-surface-border px-6 py-3 text-sm font-semibold uppercase tracking-wider text-ink transition hover:border-accent-bright"
+              className="inline-flex border border-surface-border px-6 py-3 text-sm font-semibold text-ink transition hover:border-accent-bright"
             >
               LinkedIn
             </a>
           ) : null}
         </div>
-
-        <p className="mt-16 font-mono text-[10px] uppercase tracking-[0.2em] text-ink-faint">
-          {resume.location} · {resume.name}
-        </p>
       </div>
     </section>
   )

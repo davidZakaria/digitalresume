@@ -19,11 +19,11 @@ export function SkillsSection() {
       <div className="relative mx-auto max-w-6xl px-4 md:px-8">
         <Reveal>
           <SectionHeading
-            kicker="Expertise"
-            title="My stack."
+            kicker="Skills"
+            title="Tools I reach for every week."
             editorial
             align="split"
-            subtitle="Tools and technologies I reach for every week — grouped by how I actually work."
+            subtitle="Grouped to mirror how you work — adjust groups in resume.ts anytime."
           />
         </Reveal>
 

@@ -17,7 +17,15 @@ export function ExperienceSection() {
             kicker="Experience"
             title="Roles where ownership mattered."
             editorial
-            subtitle="Production software across real-estate, HR, hospitality, and independent portfolio work."
+            subtitle={
+              <>
+                Timeline is driven by{' '}
+                <code className="rounded-md border border-surface-border bg-surface-muted px-1.5 py-0.5 font-mono text-[11px] text-accent-bright">
+                  resume.ts
+                </code>{' '}
+                — edit roles there and this page stays in sync.
+              </>
+            }
           />
         </Reveal>
 

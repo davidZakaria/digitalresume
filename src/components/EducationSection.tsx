@@ -10,7 +10,17 @@ export function EducationSection() {
     >
       <div className="mx-auto max-w-6xl px-4 md:px-8">
         <Reveal>
-          <SectionHeading kicker="Education" title="Foundation." editorial />
+          <SectionHeading
+            kicker="Education"
+            title="Learning that still shows up in the work."
+            editorial
+            subtitle={
+              <>
+                Kept alongside your PDF in{' '}
+                <code className="font-mono text-[13px] text-accent-bright">resume.ts</code>.
+              </>
+            }
+          />
         </Reveal>
 
         <StaggerList className="mt-14 divide-y divide-[var(--divider)] border-y border-[var(--divider)]" stagger={0.08}>

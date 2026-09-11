@@ -6,7 +6,7 @@ import { SectionHeading } from './SectionHeading'
 
 const FILTERS = [
   { id: 'all' as const, label: 'All' },
-  { id: 'deployed' as const, label: 'Live' },
+  { id: 'deployed' as const, label: 'Deployed' },
   { id: 'opensource' as const, label: 'GitHub' },
 ]
 
@@ -38,11 +38,17 @@ export function ProjectsSection() {
       <div className="mx-auto max-w-6xl px-4 md:px-8">
         <Reveal>
           <SectionHeading
-            kicker="Selected work"
-            title="Projects that ship."
+            kicker="Projects"
+            title="Work that's live, forkable, or both."
             editorial
             align="split"
-            subtitle="Production sites, full-stack products, and open-source repos — HR, hospitality, archives, education, and client launches."
+            subtitle={
+              <>
+                Sourced from{' '}
+                <code className="font-mono text-[13px] text-accent">resume.projects</code> — repos,
+                client domains, and optional demo links together in one list.
+              </>
+            }
           />
         </Reveal>
 
@@ -127,7 +133,7 @@ export function ProjectsSection() {
                               rel="noreferrer"
                               className="inline-flex items-center gap-2 border border-canvas bg-canvas px-5 py-2 text-xs font-semibold uppercase tracking-wider text-cream transition hover:bg-canvas/90 print:hidden"
                             >
-                              Visit site
+                              Visit live site
                               <span aria-hidden>→</span>
                             </a>
                             {hasRepo ? (
@@ -137,7 +143,7 @@ export function ProjectsSection() {
                                 rel="noreferrer"
                                 className="text-xs font-medium uppercase tracking-wider text-ink-faint underline-offset-4 transition hover:text-canvas hover:underline"
                               >
-                                Source
+                                Source on GitHub
                               </a>
                             ) : null}
                           </>
@@ -153,6 +159,17 @@ export function ProjectsSection() {
                           </a>
                         ) : null}
                       </div>
+
+                      {!hasLive &&
+                      hasRepo &&
+                      (project.title === 'HR ERP' || project.title.startsWith('Talé')) ? (
+                        <p className="mt-4 text-xs leading-relaxed text-ink-faint print:hidden">
+                          Add <code className="font-mono text-accent">liveUrl</code> in{' '}
+                          <code className="font-mono text-ink-faint">resume.ts</code> or{' '}
+                          <code className="font-mono text-ink-faint">VITE_LIVE_*_URL</code> in{' '}
+                          <code className="font-mono text-ink-faint">.env.local</code>.
+                        </p>
+                      ) : null}
                     </div>
                   </div>
                 </motion.article>
