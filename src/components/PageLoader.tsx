@@ -17,7 +17,7 @@ function ProgressRing({ progress }: { progress: number }) {
 
   return (
     <svg className="h-32 w-32 md:h-36 md:w-36" viewBox="0 0 120 120" aria-hidden>
-      <circle cx="60" cy="60" r={r} fill="none" stroke="currentColor" strokeWidth="1" className="text-cream/20" />
+      <circle cx="60" cy="60" r={r} fill="none" stroke="currentColor" strokeWidth="1" className="text-ink/20 dark:text-cream/20" />
       <circle
         cx="60"
         cy="60"
@@ -26,7 +26,7 @@ function ProgressRing({ progress }: { progress: number }) {
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
-        className="text-cream"
+        className="text-ink dark:text-cream"
         strokeDasharray={c}
         strokeDashoffset={offset}
         transform="rotate(-90 60 60)"
@@ -96,7 +96,7 @@ export function PageLoader({ onComplete }: PageLoaderProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-canvas"
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-page dark:bg-canvas"
       initial={{ opacity: 1 }}
       animate={{ opacity: phase === 'exit' ? 0 : 1 }}
       transition={{ duration: FADE_MS / 1000, ease: [0.22, 1, 0.36, 1] }}
@@ -108,7 +108,7 @@ export function PageLoader({ onComplete }: PageLoaderProps) {
         {phase === 'hello' || phase === 'exit' ? (
           <motion.p
             key="hello"
-            className="font-script text-6xl text-cream md:text-7xl"
+            className="font-script text-6xl text-ink dark:text-cream md:text-7xl"
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
@@ -118,8 +118,8 @@ export function PageLoader({ onComplete }: PageLoaderProps) {
           </motion.p>
         ) : (
           <motion.div key="count" className="flex flex-col items-center">
-            <p className="font-display text-6xl font-black tabular-nums text-cream md:text-7xl">{progress}%</p>
-            <div className="mt-6 text-cream">
+            <p className="font-display text-6xl font-black tabular-nums text-ink dark:text-cream md:text-7xl">{progress}%</p>
+            <div className="mt-6 text-ink dark:text-cream">
               <ProgressRing progress={progress} />
             </div>
           </motion.div>

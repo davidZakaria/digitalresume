@@ -105,7 +105,7 @@ export function Navbar() {
     <header
       className={[
         'no-print fixed inset-x-0 top-0 z-50 backdrop-blur-xl transition-colors duration-300',
-        onCream ? 'bg-cream/85 text-canvas' : 'bg-canvas/90 text-ink',
+        onCream ? 'bg-cream/85 text-canvas' : 'bg-page/90 text-ink dark:bg-canvas/90',
       ].join(' ')}
     >
       <ScrollProgressBar cream={onCream} />
@@ -203,7 +203,7 @@ export function Navbar() {
             id="mobile-nav"
             className={[
               'border-t px-4 py-4 md:hidden',
-              onCream ? 'border-canvas/15 bg-cream/95' : 'border-surface-border bg-canvas',
+              onCream ? 'border-canvas/15 bg-cream/95' : 'border-surface-border bg-page dark:bg-canvas',
             ].join(' ')}
             aria-label="Mobile primary"
             initial={reduce ? false : { height: 0, opacity: 0 }}

@@ -12,6 +12,7 @@ export default {
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {
+        page: 'rgb(var(--page-bg) / <alpha-value>)',
         canvas: 'rgb(var(--canvas) / <alpha-value>)',
         cream: {
           DEFAULT: 'rgb(var(--cream) / <alpha-value>)',

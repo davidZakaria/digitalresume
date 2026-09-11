@@ -39,7 +39,7 @@ export function ThemeToggle() {
       aria-checked={dark}
       aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'}
       onClick={toggleTheme}
-      className="relative flex h-8 w-14 shrink-0 items-center border border-surface-border px-0.5 transition hover:border-accent/40"
+      className="relative flex h-8 w-14 shrink-0 items-center border border-surface-border bg-surface-elevated px-0.5 transition hover:border-accent/40"
     >
       <span
         className={[
