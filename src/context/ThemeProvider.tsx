@@ -11,10 +11,6 @@ function readStoredTheme(): ThemeMode | null {
   return null
 }
 
-function themeFromDocument(): ThemeMode {
-  return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
-}
-
 function applyTheme(mode: ThemeMode) {
   const root = document.documentElement
   if (mode === 'dark') root.classList.add('dark')
@@ -28,12 +24,12 @@ function applyTheme(mode: ThemeMode) {
 
   const meta = document.querySelector('meta[name="theme-color"]')
   if (meta) {
-    meta.setAttribute('content', mode === 'dark' ? '#1c1917' : '#fafaf7')
+    meta.setAttribute('content', mode === 'dark' ? '#0a0a0a' : '#f4efe6')
   }
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeMode>(() => readStoredTheme() ?? themeFromDocument())
+  const [theme, setThemeState] = useState<ThemeMode>(() => readStoredTheme() ?? 'dark')
 
   useEffect(() => {
     applyTheme(theme)

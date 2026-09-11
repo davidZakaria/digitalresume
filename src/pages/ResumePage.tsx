@@ -16,7 +16,7 @@ export function ResumePage() {
   return (
     <SmoothScroll>
       <SeoJsonLd />
-      <div className="resume-root relative min-h-screen overflow-x-hidden bg-surface print:bg-white">
+      <div className="resume-root relative min-h-screen overflow-x-hidden bg-canvas print:bg-white">
         <SkipLink />
         <Navbar />
         <main id="main-content" tabIndex={-1}>

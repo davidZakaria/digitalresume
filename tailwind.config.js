@@ -6,10 +6,15 @@ export default {
     extend: {
       fontFamily: {
         sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
-        display: ['"Fraunces"', 'Georgia', 'serif'],
+        display: ['"Barlow Condensed"', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {
+        canvas: 'rgb(var(--canvas) / <alpha-value>)',
+        cream: {
+          DEFAULT: 'rgb(var(--cream) / <alpha-value>)',
+          muted: 'rgb(var(--cream-muted) / <alpha-value>)',
+        },
         surface: {
           DEFAULT: 'rgb(var(--surface) / <alpha-value>)',
           elevated: 'rgb(var(--surface-elevated) / <alpha-value>)',
@@ -48,10 +53,6 @@ export default {
           '0%, 100%': { backgroundPosition: '0% 50%' },
           '50%': { backgroundPosition: '100% 50%' },
         },
-        'border-shimmer': {
-          '0%': { backgroundPosition: '0% 50%' },
-          '100%': { backgroundPosition: '200% 50%' },
-        },
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-6px)' },
@@ -63,9 +64,13 @@ export default {
       },
       animation: {
         'gradient-flow': 'gradient-flow 6s ease infinite',
-        'border-shimmer': 'border-shimmer 3.5s linear infinite',
         float: 'float 5s ease-in-out infinite',
         'pulse-soft': 'pulse-soft 4s ease-in-out infinite',
+      },
+      fontSize: {
+        'display-xl': ['clamp(4.5rem,14vw,11rem)', { lineHeight: '0.88', letterSpacing: '-0.02em' }],
+        'display-lg': ['clamp(3rem,8vw,6rem)', { lineHeight: '0.92', letterSpacing: '-0.02em' }],
+        'display-md': ['clamp(2.25rem,5vw,4rem)', { lineHeight: '0.95', letterSpacing: '-0.01em' }],
       },
     },
   },
