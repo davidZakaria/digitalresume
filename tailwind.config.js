@@ -7,6 +7,8 @@ export default {
       fontFamily: {
         sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
         display: ['"Barlow Condensed"', 'system-ui', 'sans-serif'],
+        script: ['"Caveat"', 'cursive'],
+        serif: ['"Instrument Serif"', 'Georgia', 'serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {

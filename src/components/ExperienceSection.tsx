@@ -1,7 +1,8 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { resume } from '../data/resume'
+import { EditorialWord } from './EditorialWord'
 import { Reveal } from './Reveal'
-import { SectionHeading } from './SectionHeading'
+import { SectionIndex } from './SectionIndex'
 
 export function ExperienceSection() {
   const reduce = useReducedMotion()
@@ -10,26 +11,23 @@ export function ExperienceSection() {
     <section
       id="experience"
       className="section-canvas scroll-mt-24 border-b border-surface-border py-24 md:scroll-mt-28 md:py-32 print:bg-white print:text-ink"
+      data-nav-theme="dark"
     >
       <div className="mx-auto max-w-6xl px-4 md:px-8">
         <Reveal>
-          <SectionHeading
-            kicker="Experience"
-            title="Roles where ownership mattered."
-            editorial
-            subtitle={
-              <>
-                Timeline is driven by{' '}
-                <code className="rounded-md border border-surface-border bg-surface-muted px-1.5 py-0.5 font-mono text-[11px] text-accent-bright">
-                  resume.ts
-                </code>{' '}
-                — edit roles there and this page stays in sync.
-              </>
-            }
-          />
+          <SectionIndex index="02" label="Experience" />
+          <div className="mt-6 overflow-hidden">
+            <EditorialWord size="lg" className="text-ink/15">
+              Roles
+            </EditorialWord>
+          </div>
+          <p className="mt-4 max-w-2xl text-sm text-ink-faint">
+            Roles where ownership mattered — timeline driven by{' '}
+            <code className="font-mono text-accent-bright">resume.ts</code>.
+          </p>
         </Reveal>
 
-        <div className="mt-16 divide-y divide-[var(--divider)] border-y border-[var(--divider)]">
+        <div className="mt-14 divide-y divide-[var(--divider)] border-y border-[var(--divider)]">
           {resume.experience.map((job, index) => (
             <motion.article
               key={`${job.company}-${job.period}`}

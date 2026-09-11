@@ -1,26 +1,24 @@
 import { resume } from '../data/resume'
 import { Reveal, StaggerList } from './Reveal'
-import { SectionHeading } from './SectionHeading'
+import { SectionIndex } from './SectionIndex'
 
 export function EducationSection() {
   return (
     <section
       id="education"
       className="section-canvas scroll-mt-24 border-b border-surface-border py-24 md:scroll-mt-28 md:py-32 print:bg-white print:text-ink"
+      data-nav-theme="dark"
     >
       <div className="mx-auto max-w-6xl px-4 md:px-8">
         <Reveal>
-          <SectionHeading
-            kicker="Education"
-            title="Learning that still shows up in the work."
-            editorial
-            subtitle={
-              <>
-                Kept alongside your PDF in{' '}
-                <code className="font-mono text-[13px] text-accent-bright">resume.ts</code>.
-              </>
-            }
-          />
+          <SectionIndex index="05" label="Education" />
+          <h2 className="mt-6 font-display text-3xl font-bold uppercase tracking-tight text-ink md:text-4xl">
+            Learning that still shows up in the work.
+          </h2>
+          <p className="mt-4 text-sm text-ink-faint">
+            Kept alongside your PDF in{' '}
+            <code className="font-mono text-accent-bright">resume.ts</code>.
+          </p>
         </Reveal>
 
         <StaggerList className="mt-14 divide-y divide-[var(--divider)] border-y border-[var(--divider)]" stagger={0.08}>

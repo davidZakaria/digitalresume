@@ -1,8 +1,12 @@
 import { useMemo, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { resume, type PortfolioProject } from '../data/resume'
+import { EditorialWord } from './EditorialWord'
 import { Reveal } from './Reveal'
-import { SectionHeading } from './SectionHeading'
+import { SectionIndex } from './SectionIndex'
+import { ServiceMarquee } from './ServiceMarquee'
+
+const TECH_PILLS = ['TypeScript', 'JavaScript', 'React', 'Next.js', 'Node.js', 'MongoDB', 'Tailwind', 'Express'] as const
 
 const FILTERS = [
   { id: 'all' as const, label: 'All' },
@@ -24,6 +28,7 @@ export function ProjectsSection() {
   const reduce = useReducedMotion()
   const { projects } = resume
   const [filter, setFilter] = useState<FilterId>('all')
+  const [activeTech, setActiveTech] = useState<string | null>(null)
 
   const visible = useMemo(
     () => projects.filter((p) => projectMatches(p, filter)),
@@ -33,25 +38,54 @@ export function ProjectsSection() {
   return (
     <section
       id="projects"
-      className="section-cream scroll-mt-24 py-24 md:scroll-mt-28 md:py-32 print:bg-white print:text-ink"
+      className="section-cream relative scroll-mt-24 py-24 md:scroll-mt-28 md:py-32 print:bg-white print:text-ink"
+      data-nav-theme="cream"
     >
       <div className="mx-auto max-w-6xl px-4 md:px-8">
         <Reveal>
-          <SectionHeading
-            kicker="Projects"
-            title="Work that's live, forkable, or both."
-            editorial
-            align="split"
-            subtitle={
-              <>
-                Sourced from{' '}
-                <code className="font-mono text-[13px] text-accent">resume.projects</code> — repos,
-                client domains, and optional demo links together in one list.
-              </>
-            }
-          />
-        </Reveal>
+          <SectionIndex index="04" label="Work" className="text-accent" />
 
+          <div className="mt-8 flex flex-wrap justify-center gap-2 md:gap-3">
+            {TECH_PILLS.map((tech) => (
+              <button
+                key={tech}
+                type="button"
+                className={[
+                  'relative border px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition',
+                  activeTech === tech
+                    ? 'border-canvas bg-canvas text-cream'
+                    : 'border-canvas/15 text-ink-faint hover:border-canvas/40 hover:text-canvas',
+                ].join(' ')}
+                onMouseEnter={() => setActiveTech(tech)}
+                onFocus={() => setActiveTech(tech)}
+                onMouseLeave={() => setActiveTech(null)}
+                onBlur={() => setActiveTech(null)}
+              >
+                {tech}
+              </button>
+            ))}
+          </div>
+
+          <p className="mt-6 text-center font-mono text-[10px] uppercase tracking-[0.28em] text-ink-faint">
+            Scroll to explore my
+          </p>
+
+          <div className="mt-6 overflow-hidden">
+            <EditorialWord size="xl" className="text-center text-canvas">
+              Work
+            </EditorialWord>
+          </div>
+
+          <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-ink-faint">
+            Work that&apos;s live, forkable, or both — sourced from{' '}
+            <code className="font-mono text-accent">resume.projects</code>.
+          </p>
+        </Reveal>
+      </div>
+
+      <ServiceMarquee className="mt-12" />
+
+      <div className="mx-auto max-w-6xl px-4 md:px-8">
         <div className="mt-12 flex flex-wrap gap-2" role="group" aria-label="Filter projects by type">
           {FILTERS.map((f) => (
             <button
@@ -159,17 +193,6 @@ export function ProjectsSection() {
                           </a>
                         ) : null}
                       </div>
-
-                      {!hasLive &&
-                      hasRepo &&
-                      (project.title === 'HR ERP' || project.title.startsWith('Talé')) ? (
-                        <p className="mt-4 text-xs leading-relaxed text-ink-faint print:hidden">
-                          Add <code className="font-mono text-accent">liveUrl</code> in{' '}
-                          <code className="font-mono text-ink-faint">resume.ts</code> or{' '}
-                          <code className="font-mono text-ink-faint">VITE_LIVE_*_URL</code> in{' '}
-                          <code className="font-mono text-ink-faint">.env.local</code>.
-                        </p>
-                      ) : null}
                     </div>
                   </div>
                 </motion.article>
