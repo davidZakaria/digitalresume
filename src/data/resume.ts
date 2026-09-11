@@ -121,6 +121,7 @@ export const resume = {
       description:
         'Enterprise real-estate post-sales and customer-service CRM with bilingual Arabic RTL / English LTR UI, RBAC, mandatory 2FA, audit logging, bulk Excel import, and automated backups.',
       repoUrl: 'https://github.com/davidZakaria/Cs-njd',
+      liveUrl: 'https://njd-crm.com/',
       stack: ['Next.js', 'TypeScript', 'PostgreSQL', 'Prisma', 'NextAuth', 'next-intl'],
     },
     {
@@ -136,6 +137,7 @@ export const resume = {
       description:
         'Legal and corporate operations ERP for the real-estate group: lawsuit and prosecution tracking, court sessions, legal notices, contracts, GAFI compliance, subsidiary governance, and automated backups.',
       repoUrl: 'https://github.com/davidZakaria/Legal-erp',
+      liveUrl: 'https://legal-njd.com/',
       stack: ['Next.js', 'TypeScript', 'PostgreSQL', 'Prisma', 'NextAuth', 'next-intl'],
     },
     {
