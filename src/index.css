@@ -162,20 +162,6 @@
     }
   }
 
-  .loader-pencil-orbit {
-    transform-origin: 60px 60px;
-    animation: pencil-orbit 2.4s linear infinite;
-  }
-
-  @keyframes pencil-orbit {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
   .marquee-track {
     animation: marquee-scroll 28s linear infinite;
   }
@@ -191,7 +177,6 @@
 
   @media (prefers-reduced-motion: reduce) {
     .stamp-text,
-    .loader-pencil-orbit,
     .marquee-track {
       animation: none;
     }

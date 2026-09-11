@@ -80,7 +80,7 @@ export function ContactSection() {
       <div className="pointer-events-none absolute inset-0 bg-grid opacity-30" aria-hidden />
       <div className="relative mx-auto max-w-6xl px-4 md:px-8">
         <Reveal>
-          <SectionIndex index="06" label="Contact" />
+          <SectionIndex index="07" label="Contact" />
 
           <div className="mt-10 grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div>

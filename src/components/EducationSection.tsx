@@ -11,7 +11,7 @@ export function EducationSection() {
     >
       <div className="mx-auto max-w-6xl px-4 md:px-8">
         <Reveal>
-          <SectionIndex index="05" label="Education" />
+          <SectionIndex index="06" label="Education" />
           <h2 className="mt-6 font-display text-3xl font-bold uppercase tracking-tight text-ink md:text-4xl">
             Learning that still shows up in the work.
           </h2>

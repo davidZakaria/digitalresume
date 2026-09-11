@@ -67,7 +67,7 @@ export function SkillsSection() {
                               className={[
                                 'flex h-2 w-2 shrink-0 rounded-full border transition',
                                 isActive
-                                  ? 'border-accent bg-accent-bright'
+                                  ? 'border-cream bg-cream'
                                   : 'border-ink-faint/40 bg-transparent',
                               ].join(' ')}
                               aria-hidden
