@@ -1,63 +1,105 @@
+import { useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { resume } from '../data/resume'
 import { Reveal } from './Reveal'
-import { SectionHeading } from './SectionHeading'
+import { SectionIndex } from './SectionIndex'
 
-const BENTO_SPAN = ['md:col-span-2', 'md:col-span-1', 'md:col-span-1', 'md:col-span-2'] as const
+const ICONS = ['</>', '◈', '⚙', '⬡'] as const
 
 export function SkillsSection() {
   const reduce = useReducedMotion()
+  const [activeIndex, setActiveIndex] = useState(0)
 
   return (
     <section
       id="skills"
-      className="scroll-mt-24 border-y border-surface-border bg-gradient-to-b from-surface via-surface-muted/40 to-surface py-20 md:scroll-mt-28 md:py-28 print:bg-white print:text-zinc-900"
+      className="section-canvas relative scroll-mt-24 overflow-hidden border-b border-surface-border py-24 md:scroll-mt-28 md:py-32 print:bg-white print:text-ink"
+      data-nav-theme="dark"
     >
-      <div className="mx-auto max-w-5xl px-4 md:px-6">
-        <Reveal>
-          <SectionHeading
-            kicker="Skills"
-            title="Tools I reach for every week."
-            subtitle="Grouped to mirror how you work — adjust groups in resume.ts anytime."
-          />
-        </Reveal>
+      <div className="pointer-events-none absolute inset-0 bg-grid opacity-35" aria-hidden />
 
-        <div className="mt-14 grid gap-4 md:grid-cols-3">
-          {resume.skillGroups.map((group, i) => (
-            <motion.div
-              key={group.label}
-              className={BENTO_SPAN[i] ?? ''}
-              initial={reduce ? false : { opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-8%' }}
-              transition={{
-                duration: 0.45,
-                delay: reduce ? 0 : i * 0.07,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-            >
-              <div className="h-full rounded-2xl border border-surface-border bg-surface-elevated/95 p-6 shadow-innerGlow backdrop-blur-sm transition duration-300 hover:border-accent/25 hover:shadow-glow md:p-7">
-                <div className="flex items-center gap-3">
-                  <span className="h-px flex-1 bg-gradient-to-r from-accent/35 to-transparent" aria-hidden />
-                  <h3 className="whitespace-nowrap font-mono text-xs font-semibold uppercase tracking-[0.18em] text-accent-bright">
-                    {group.label}
-                  </h3>
-                  <span className="h-px flex-1 bg-gradient-to-l from-accent/25 to-transparent" aria-hidden />
-                </div>
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {group.items.map((skill) => (
-                    <span
-                      key={skill}
-                      className="rounded-lg border border-surface-border bg-surface-muted/70 px-3 py-1.5 text-xs font-medium text-ink-soft transition hover:border-accent/30 hover:bg-surface-elevated"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+      <div className="relative mx-auto max-w-6xl px-4 md:px-8">
+        <Reveal>
+          <SectionIndex index="03" label="Expertise" />
+
+          <div className="mt-10 grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+            <div className="flex items-start lg:sticky lg:top-32">
+              <h2
+                className="vertical-label font-display text-display-md font-black uppercase text-ink lg:text-[clamp(3.5rem,8vw,5.5rem)]"
+                aria-hidden
+              >
+                My expertise
+              </h2>
+              <h2 className="sr-only">Tools I reach for every week</h2>
+            </div>
+
+            <div>
+              <p className="mb-8 max-w-md text-sm leading-relaxed text-ink-faint">
+                Grouped to mirror how you work — adjust groups in{' '}
+                <code className="font-mono text-accent-bright">resume.ts</code> anytime.
+              </p>
+
+              <ul className="divide-y divide-[var(--divider)] border-y border-[var(--divider)]">
+                {resume.skillGroups.map((group, i) => {
+                  const isActive = activeIndex === i
+                  return (
+                    <li key={group.label}>
+                      <button
+                        type="button"
+                        className={[
+                          'group flex w-full items-start gap-5 py-6 text-left transition md:py-7',
+                          isActive ? 'text-ink' : 'text-ink-faint hover:text-ink-soft',
+                        ].join(' ')}
+                        onMouseEnter={() => setActiveIndex(i)}
+                        onFocus={() => setActiveIndex(i)}
+                        onClick={() => setActiveIndex(i)}
+                        aria-expanded={isActive}
+                      >
+                        <span className="mt-1 font-mono text-lg text-accent" aria-hidden>
+                          {ICONS[i] ?? '•'}
+                        </span>
+                        <span className="flex-1">
+                          <span className="flex items-center justify-between gap-4">
+                            <span className="font-display text-xl font-semibold uppercase tracking-tight md:text-2xl">
+                              {group.label}
+                            </span>
+                            <span
+                              className={[
+                                'flex h-2 w-2 shrink-0 rounded-full border transition',
+                                isActive
+                                  ? 'border-cream bg-cream'
+                                  : 'border-ink-faint/40 bg-transparent',
+                              ].join(' ')}
+                              aria-hidden
+                            />
+                          </span>
+                        </span>
+                      </button>
+
+                      <motion.div
+                        initial={false}
+                        animate={{ height: isActive ? 'auto' : 0, opacity: isActive ? 1 : 0 }}
+                        transition={{ duration: reduce ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <div className="flex flex-wrap gap-2 pb-6 pl-10">
+                          {group.items.map((skill) => (
+                            <span
+                              key={skill}
+                              className="border border-surface-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-soft"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </motion.div>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   )

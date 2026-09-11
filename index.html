@@ -1,16 +1,20 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#fafaf7" />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="color-scheme" content="dark light" />
     <script>
       (function () {
         try {
-          if (localStorage.getItem('resume-theme') === 'dark') document.documentElement.classList.add('dark')
-        } catch (e) {}
+          var stored = localStorage.getItem('resume-theme')
+          if (stored === 'light') document.documentElement.classList.remove('dark')
+          else document.documentElement.classList.add('dark')
+        } catch (e) {
+          document.documentElement.classList.add('dark')
+        }
       })()
     </script>
     <meta
@@ -23,8 +27,7 @@
       content="Portfolio résumé with HR ERP, Talé hotel booking, Arabic cinema archives, and English learning platform work."
     />
     <meta property="og:type" content="website" />
-    <!-- Replace with your live URL after deploying to Hostinger -->
-    <meta property="og:url" content="https://example.com/" />
+    <meta property="og:url" content="https://davidsamy.tech/" />
     <meta name="twitter:card" content="summary_large_image" />
     <title>David Samy — Digital Résumé</title>
   </head>

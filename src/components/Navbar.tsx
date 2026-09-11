@@ -14,7 +14,7 @@ const NAV_LINKS: { id: SectionId; label: string }[] = [
   { id: 'contact', label: 'Contact' },
 ]
 
-function ScrollProgressBar() {
+function ScrollProgressBar({ cream }: { cream: boolean }) {
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
@@ -41,9 +41,12 @@ function ScrollProgressBar() {
   }, [])
 
   return (
-    <div className="h-[3px] w-full bg-surface-muted" aria-hidden="true">
+    <div
+      className={['h-px w-full', cream ? 'bg-canvas/15' : 'bg-surface-border'].join(' ')}
+      aria-hidden="true"
+    >
       <div
-        className="h-full bg-gradient-to-r from-accent to-accent-bright transition-[width] duration-200 ease-out motion-reduce:transition-none"
+        className="h-full bg-accent transition-[width] duration-200 ease-out motion-reduce:transition-none"
         style={{ width: `${progress}%` }}
       />
     </div>
@@ -52,74 +55,97 @@ function ScrollProgressBar() {
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
+  const [onCream, setOnCream] = useState(true)
   const reduce = useReducedMotion()
   const location = useLocation()
   const isGame = location.pathname.startsWith('/game')
-  const isGamesHub =
-    location.pathname === '/game' || location.pathname === '/game/'
+  const isGamesHub = location.pathname === '/game' || location.pathname === '/game/'
   const active = useScrollspy(SECTION_IDS)
 
-  const initials = resume.name
-    .split(/\s+/)
-    .map((w) => w[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase()
+  const firstName = resume.name.split(/\s+/)[0] ?? resume.name
+
+  useEffect(() => {
+    if (isGame) {
+      setOnCream(false)
+      return
+    }
+
+    const update = () => {
+      const hero = document.getElementById('home')
+      const projects = document.getElementById('projects')
+      const y = window.scrollY + 72
+      const heroBottom = hero ? hero.offsetTop + hero.offsetHeight : 0
+      const projectsTop = projects ? projects.offsetTop : Number.POSITIVE_INFINITY
+      const projectsBottom = projects ? projects.offsetTop + projects.offsetHeight : 0
+      setOnCream(y < heroBottom || (y >= projectsTop && y < projectsBottom))
+    }
+
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
+  }, [isGame])
 
   const linkClass = (id: SectionId) =>
     [
-      'rounded-full px-3 py-1.5 text-sm transition-colors duration-200',
-      active === id
-        ? 'bg-accent-muted text-ink shadow-innerGlow ring-1 ring-accent/25'
-        : 'text-ink-faint hover:text-accent',
+      'relative px-2 py-1 font-mono text-[11px] uppercase tracking-[0.18em] transition-colors duration-200',
+      onCream
+        ? active === id
+          ? 'text-canvas'
+          : 'text-canvas/55 hover:text-canvas'
+        : active === id
+          ? 'text-ink'
+          : 'text-ink-faint hover:text-accent',
     ].join(' ')
 
   return (
-    <header className="no-print sticky top-0 z-50 border-b border-surface-border bg-surface-elevated/90 shadow-nav backdrop-blur-xl backdrop-saturate-150">
-      <ScrollProgressBar />
-      <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3 md:px-6">
+    <header
+      className={[
+        'no-print fixed inset-x-0 top-0 z-50 backdrop-blur-xl transition-colors duration-300',
+        onCream ? 'bg-cream/85 text-canvas' : 'bg-canvas/90 text-ink',
+      ].join(' ')}
+    >
+      <ScrollProgressBar cream={onCream} />
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 md:px-8">
         {isGame ? (
           <Link
             to="/"
-            className="group relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-accent-muted to-accent-soft font-mono text-sm font-bold text-ink ring-1 ring-surface-border transition hover:ring-accent/35 hover:shadow-glow"
+            className="font-script text-2xl text-ink transition hover:text-accent"
             aria-label="Back to résumé home"
           >
-            <span className="relative z-10">{initials}</span>
-            <span
-              className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition group-hover:opacity-100 motion-reduce:opacity-0"
-              style={{ background: 'var(--initials-hover-glow)' }}
-            />
+            {firstName.toLowerCase()}
           </Link>
         ) : (
           <a
             href="#"
-            className="group relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-accent-muted to-accent-soft font-mono text-sm font-bold text-ink ring-1 ring-surface-border transition hover:ring-accent/35 hover:shadow-glow"
+            className={[
+              'font-script text-2xl transition hover:opacity-80',
+              onCream ? 'text-canvas' : 'text-ink',
+            ].join(' ')}
             aria-label="Back to top"
           >
-            <span className="relative z-10">{initials}</span>
-            <span
-              className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition group-hover:opacity-100 motion-reduce:opacity-0"
-              style={{ background: 'var(--initials-hover-glow)' }}
-            />
+            {firstName.toLowerCase()}
           </a>
         )}
 
-        <div className="flex items-center gap-2">
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
+        <nav className="hidden flex-1 items-center justify-center gap-1 md:flex" aria-label="Primary">
           {isGame ? (
             <>
               <Link
                 to="/"
-                className="rounded-full px-3 py-1.5 text-sm text-ink-faint transition-colors duration-200 hover:text-accent"
+                className="px-2 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-faint transition hover:text-accent"
               >
                 Résumé
               </Link>
               {!isGamesHub && (
                 <Link
                   to="/game"
-                  className="rounded-full px-3 py-1.5 text-sm text-ink-faint transition-colors duration-200 hover:text-accent"
+                  className="px-2 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-faint transition hover:text-accent"
                 >
-                  All games
+                  Games
                 </Link>
               )}
             </>
@@ -128,11 +154,23 @@ export function Navbar() {
               {NAV_LINKS.map((l) => (
                 <a key={l.id} href={`#${l.id}`} className={linkClass(l.id)}>
                   {l.label}
+                  {active === l.id ? (
+                    <span
+                      className={[
+                        'absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full',
+                        onCream ? 'bg-canvas' : 'bg-accent',
+                      ].join(' ')}
+                      aria-hidden
+                    />
+                  ) : null}
                 </a>
               ))}
               <Link
                 to="/game"
-                className="rounded-full px-3 py-1.5 text-sm text-ink-faint transition-colors duration-200 hover:text-accent"
+                className={[
+                  'px-2 py-1 font-mono text-[11px] uppercase tracking-[0.18em] transition',
+                  onCream ? 'text-canvas/55 hover:text-canvas' : 'text-ink-faint hover:text-accent',
+                ].join(' ')}
               >
                 Play
               </Link>
@@ -140,17 +178,22 @@ export function Navbar() {
           )}
         </nav>
 
-        <ThemeToggle />
-
-        <button
-          type="button"
-          className="rounded-xl border border-surface-border bg-surface-muted/80 px-3 py-2 text-sm text-ink backdrop-blur transition hover:border-accent/30 hover:bg-surface-elevated md:hidden"
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          onClick={() => setOpen((v) => !v)}
-        >
-          Menu
-        </button>
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <button
+            type="button"
+            className={[
+              'border px-3 py-2 font-mono text-[11px] uppercase tracking-[0.15em] transition md:hidden',
+              onCream
+                ? 'border-canvas/20 text-canvas hover:border-canvas/50'
+                : 'border-surface-border text-ink hover:border-accent/40',
+            ].join(' ')}
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            onClick={() => setOpen((v) => !v)}
+          >
+            Menu
+          </button>
         </div>
       </div>
 
@@ -158,7 +201,10 @@ export function Navbar() {
         {open && (
           <motion.nav
             id="mobile-nav"
-            className="border-t border-surface-border bg-surface-elevated/98 px-4 py-4 backdrop-blur-xl md:hidden"
+            className={[
+              'border-t px-4 py-4 md:hidden',
+              onCream ? 'border-canvas/15 bg-cream/95' : 'border-surface-border bg-canvas',
+            ].join(' ')}
             aria-label="Mobile primary"
             initial={reduce ? false : { height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
@@ -170,7 +216,7 @@ export function Navbar() {
                 <>
                   <Link
                     to="/"
-                    className="rounded-lg px-3 py-2.5 text-sm text-ink-faint hover:text-accent"
+                    className="rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-wider text-ink-faint hover:text-accent"
                     onClick={() => setOpen(false)}
                   >
                     Résumé
@@ -178,10 +224,10 @@ export function Navbar() {
                   {!isGamesHub && (
                     <Link
                       to="/game"
-                      className="rounded-lg px-3 py-2.5 text-sm text-ink-faint hover:text-accent"
+                      className="rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-wider text-ink-faint hover:text-accent"
                       onClick={() => setOpen(false)}
                     >
-                      All games
+                      Games
                     </Link>
                   )}
                 </>
@@ -191,7 +237,7 @@ export function Navbar() {
                     <a
                       key={l.id}
                       href={`#${l.id}`}
-                      className={`rounded-lg px-3 py-2.5 text-sm ${linkClass(l.id)}`}
+                      className={`rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-wider ${linkClass(l.id)}`}
                       onClick={() => setOpen(false)}
                     >
                       {l.label}
@@ -199,7 +245,10 @@ export function Navbar() {
                   ))}
                   <Link
                     to="/game"
-                    className="rounded-lg px-3 py-2.5 text-sm text-ink-faint hover:text-accent"
+                    className={[
+                      'rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-wider',
+                      onCream ? 'text-canvas/55 hover:text-canvas' : 'text-ink-faint hover:text-accent',
+                    ].join(' ')}
                     onClick={() => setOpen(false)}
                   >
                     Play
