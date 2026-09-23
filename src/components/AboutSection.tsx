@@ -38,7 +38,7 @@ export function AboutSection() {
                 <img
                   src="/david-portrait.png"
                   alt="David Samy"
-                  className="h-full w-full object-cover object-[center_12%]"
+                  className="h-full w-full object-cover object-top"
                   loading="lazy"
                   decoding="async"
                 />
