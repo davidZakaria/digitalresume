@@ -1,23 +1,37 @@
 /**
  * Talking-avatar media — drop files at these exact public paths.
  *
- *   public/avatar/david-talking.webm   preferred 12.4s loop (cream field, no alpha)
- *   public/avatar/david-talking.mp4    fallback
+ *   public/avatar/david-intro.webm     7.5s voiced intro (cream field, no alpha)
+ *   public/avatar/david-intro.mp4      intro fallback
+ *   public/avatar/david-intro.vtt      captions for the spoken line
+ *   public/avatar/david-talking.webm   12.4s silent loop (cream field, no alpha)
+ *   public/avatar/david-talking.mp4    loop fallback
  *   public/avatar/poster.jpg           still / mobile poster
  *
  * The slot probes these URLs at runtime. Missing files keep the placeholder.
  * See `public/avatar/README.md`.
  */
 export const AVATAR_ASSETS = {
-  webm: '/avatar/david-talking.webm',
-  mp4: '/avatar/david-talking.mp4',
+  introWebm: '/avatar/david-intro.webm',
+  introMp4: '/avatar/david-intro.mp4',
+  introCaptions: '/avatar/david-intro.vtt',
+  loopWebm: '/avatar/david-talking.webm',
+  loopMp4: '/avatar/david-talking.mp4',
   poster: '/avatar/poster.jpg',
   placeholderPortrait: '/david-portrait.png',
 } as const
 
+/** Spoken line in the intro — keep in sync with `david-intro.vtt`. */
+export const AVATAR_INTRO_CAPTION =
+  "Hi, I'm David. I'm a software developer. I build responsive web applications, interactive websites and AI-powered platforms."
+
+export const AVATAR_CROSSFADE_MS = 400
+
 export type AvatarSources = {
-  webm: boolean
-  mp4: boolean
+  introWebm: boolean
+  introMp4: boolean
+  loopWebm: boolean
+  loopMp4: boolean
   poster: boolean
 }
 
@@ -67,10 +81,12 @@ export async function probePublicAsset(url: string, kind: 'image' | 'video'): Pr
 }
 
 export async function probeAvatarSources(): Promise<AvatarSources> {
-  const [webm, mp4, poster] = await Promise.all([
-    probePublicAsset(AVATAR_ASSETS.webm, 'video'),
-    probePublicAsset(AVATAR_ASSETS.mp4, 'video'),
+  const [introWebm, introMp4, loopWebm, loopMp4, poster] = await Promise.all([
+    probePublicAsset(AVATAR_ASSETS.introWebm, 'video'),
+    probePublicAsset(AVATAR_ASSETS.introMp4, 'video'),
+    probePublicAsset(AVATAR_ASSETS.loopWebm, 'video'),
+    probePublicAsset(AVATAR_ASSETS.loopMp4, 'video'),
     probePublicAsset(AVATAR_ASSETS.poster, 'image'),
   ])
-  return { webm, mp4, poster }
+  return { introWebm, introMp4, loopWebm, loopMp4, poster }
 }
