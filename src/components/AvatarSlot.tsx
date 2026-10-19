@@ -17,6 +17,7 @@ import {
 type AvatarSlotProps = {
   className?: string
   clockRef?: MutableRefObject<AvatarIntroClock>
+  onCaption?: (caption: string) => void
 }
 
 type Phase = 'poster' | 'intro' | 'loop'
@@ -33,7 +34,7 @@ function bindInlineVideo(el: HTMLVideoElement | null, store: MutableRefObject<HT
   markWebkitInline(el)
 }
 
-export function AvatarSlot({ className = '', clockRef }: AvatarSlotProps) {
+export function AvatarSlot({ className = '', clockRef, onCaption }: AvatarSlotProps) {
   const reduce = useReducedMotion()
   const saveData = useSaveData()
   const coarsePointer = useMediaQuery('(pointer: coarse)')
@@ -270,6 +271,10 @@ export function AvatarSlot({ className = '', clockRef }: AvatarSlotProps) {
   const showUnmutePill = phase === 'intro' && !soundOn && !wantsManualStart
   const showReplay = (phase === 'loop' || (phase === 'intro' && soundOn)) && hasIntro
   const showCaption = phase === 'intro'
+
+  useEffect(() => {
+    onCaption?.(showCaption ? AVATAR_INTRO_CAPTION : '')
+  }, [onCaption, showCaption])
   const mountIntro = Boolean(hasIntro && (phase !== 'poster' || inView || wantsManualStart))
   const videoCoversPoster = phase === 'intro' || phase === 'loop'
   const introSources = sources
@@ -386,15 +391,9 @@ export function AvatarSlot({ className = '', clockRef }: AvatarSlotProps) {
         ) : null}
       </div>
 
-      {showCaption ? (
-        <p className="avatar-caption" aria-live="polite">
-          {AVATAR_INTRO_CAPTION}
-        </p>
-      ) : (
-        <p className="sr-only" aria-live="polite">
-          {phase === 'loop' ? `${resume.name} talking avatar` : ''}
-        </p>
-      )}
+      <p className="sr-only" aria-live="polite">
+        {showCaption ? AVATAR_INTRO_CAPTION : phase === 'loop' ? `${resume.name} talking avatar` : ''}
+      </p>
     </div>
   )
 }

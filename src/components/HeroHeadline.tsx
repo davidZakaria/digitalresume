@@ -90,7 +90,7 @@ export function HeroHeadline({ clockRef }: HeroHeadlineProps) {
       >
         <motion.span
           className="hero-headline-line block origin-[50%_80%]"
-          animate={lineStraight ? { rotate: 0, x: 0 } : { rotate: -6, x: -10 }}
+          animate={lineStraight ? { rotate: 0, x: 0 } : { rotate: -6.5, x: -18 }}
           transition={{ type: 'spring', stiffness: 280, damping: 16, mass: 0.7 }}
         >
           <span className="block text-display-xl">

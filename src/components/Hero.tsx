@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { resume } from '../data/resume'
 import { IDLE_INTRO_CLOCK, type AvatarIntroClock } from '../lib/avatarAssets'
@@ -11,6 +11,7 @@ export function Hero() {
   const reduce = useReducedMotion()
   const firstName = resume.name.split(/\s+/)[0] ?? resume.name
   const clockRef = useRef<AvatarIntroClock>({ ...IDLE_INTRO_CLOCK, hasIntro: true })
+  const [caption, setCaption] = useState('')
 
   return (
     <section
@@ -50,17 +51,22 @@ export function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             >
-              <AvatarSlot clockRef={clockRef} />
+              <AvatarSlot clockRef={clockRef} onCaption={setCaption} />
             </motion.div>
 
             <motion.div
-              className="hero-headline-wrap relative z-[2] mt-1 w-full overflow-x-clip md:-mt-3"
+              className="hero-headline-wrap relative z-[2] -mt-2 w-full overflow-x-clip md:-mt-8"
               initial={reduce ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.45, delay: reduce ? 0 : 0.08 }}
             >
               <HeroHeadline clockRef={clockRef} />
             </motion.div>
+            {caption ? (
+              <p className="avatar-caption" aria-hidden>
+                {caption}
+              </p>
+            ) : null}
 
             <motion.p
               className="mt-5 font-mono text-[11px] uppercase tracking-[0.3em] text-canvas/45"
