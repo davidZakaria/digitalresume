@@ -11,13 +11,16 @@
  * The slot probes these URLs at runtime. Missing files keep the placeholder.
  * See `public/avatar/README.md`.
  */
+/** Bump when replacing unhashed files in `public/avatar/`. */
+const AVATAR_CACHE = 'v=2'
+
 export const AVATAR_ASSETS = {
-  introWebm: '/avatar/david-intro.webm',
-  introMp4: '/avatar/david-intro.mp4',
-  introCaptions: '/avatar/david-intro.vtt',
-  loopWebm: '/avatar/david-talking.webm',
-  loopMp4: '/avatar/david-talking.mp4',
-  poster: '/avatar/poster.jpg',
+  introWebm: `/avatar/david-intro.webm?${AVATAR_CACHE}`,
+  introMp4: `/avatar/david-intro.mp4?${AVATAR_CACHE}`,
+  introCaptions: `/avatar/david-intro.vtt?${AVATAR_CACHE}`,
+  loopWebm: `/avatar/david-talking.webm?${AVATAR_CACHE}`,
+  loopMp4: `/avatar/david-talking.mp4?${AVATAR_CACHE}`,
+  poster: `/avatar/poster.jpg?${AVATAR_CACHE}`,
   placeholderPortrait: '/david-portrait.png',
 } as const
 
