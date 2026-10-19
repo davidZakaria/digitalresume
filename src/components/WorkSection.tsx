@@ -27,7 +27,7 @@ export function WorkSection() {
                 key={tech}
                 type="button"
                 className={[
-                  'border px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition',
+                  'tap-target inline-flex items-center border px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition',
                   activeTech === tech
                     ? 'border-cream bg-cream text-canvas'
                     : 'border-surface-border text-ink-faint hover:border-cream/40 hover:text-ink',

@@ -39,12 +39,12 @@ export function ThemeToggle() {
       aria-checked={dark}
       aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'}
       onClick={toggleTheme}
-      className="relative flex h-8 w-14 shrink-0 items-center border border-surface-border bg-surface-elevated px-0.5 transition hover:border-accent/40"
+      className="relative flex h-11 w-14 shrink-0 items-center border border-surface-border bg-surface-elevated px-0.5 transition hover:border-accent/40"
     >
       <span
         className={[
           'relative z-[1] flex h-6 w-6 items-center justify-center border border-surface-border bg-surface-elevated text-ink-soft transition-[transform] duration-200 ease-out motion-reduce:transition-none',
-          dark ? 'translate-x-6' : 'translate-x-0',
+          dark ? 'translate-x-7' : 'translate-x-0',
         ].join(' ')}
       >
         {dark ? <MoonGlyph className="text-ink-soft" /> : <SunGlyph className="text-ink-soft" />}

@@ -89,7 +89,7 @@ function ProjectCard({
                 href={live}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 border border-canvas bg-canvas px-5 py-2 text-xs font-semibold uppercase tracking-wider text-cream transition hover:bg-canvas/90 print:hidden"
+                className="tap-target inline-flex items-center gap-2 border border-canvas bg-canvas px-5 py-2 text-xs font-semibold uppercase tracking-wider text-cream transition hover:bg-canvas/90 print:hidden"
               >
                 Visit live site
                 <span aria-hidden>→</span>
@@ -99,7 +99,7 @@ function ProjectCard({
                   href={repo}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-xs font-medium uppercase tracking-wider text-canvas/50 underline-offset-4 transition hover:text-canvas hover:underline"
+                  className="tap-target inline-flex items-center text-xs font-medium uppercase tracking-wider text-canvas/50 underline-offset-4 transition hover:text-canvas hover:underline"
                 >
                   Source on GitHub
                 </a>
@@ -110,7 +110,7 @@ function ProjectCard({
               href={repo}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-canvas transition hover:opacity-80 print:underline"
+              className="tap-target inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-canvas transition hover:opacity-80 print:underline"
             >
               View on GitHub
               <span aria-hidden>→</span>
@@ -126,8 +126,8 @@ export function ProjectsSection() {
   const { projects } = resume
   const [filter, setFilter] = useState<FilterId>('all')
   const reduce = useReducedMotion()
-  const stackedViewport = useMediaQuery('(max-width: 767px)')
-  const pin = !reduce && !stackedViewport
+  const desktopPin = useMediaQuery('(min-width: 1024px) and (pointer: fine) and (hover: hover)')
+  const pin = !reduce && desktopPin
 
   const visible = useMemo(
     () => projects.filter((p) => projectMatches(p, filter)),
@@ -221,14 +221,14 @@ export function ProjectsSection() {
                 aria-pressed={filter === f.id}
                 onClick={() => setFilter(f.id)}
                 className={[
-                  'border px-4 py-2 font-mono text-[10px] uppercase tracking-[0.15em] transition',
+                  'tap-target inline-flex items-center border px-4 py-2 font-mono text-[10px] uppercase tracking-[0.15em] transition',
                   filter === f.id
                     ? 'border-canvas bg-canvas text-cream'
-                    : 'border-canvas/20 text-canvas/45 hover:border-canvas/50 hover:text-canvas',
+                    : 'border-canvas/25 text-canvas/70 hover:border-canvas/50 hover:text-canvas',
                 ].join(' ')}
               >
                 {f.label}
-                <span className="ms-1.5 opacity-70">
+                <span className="ms-1.5">
                   {f.id === 'all'
                     ? projects.length
                     : projects.filter((p) => projectMatches(p, f.id)).length}

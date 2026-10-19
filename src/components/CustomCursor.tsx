@@ -22,7 +22,7 @@ export function CustomCursor() {
   useEffect(() => {
     if (reduce) return
 
-    const mq = window.matchMedia('(pointer: fine)')
+    const mq = window.matchMedia('(pointer: fine) and (hover: hover)')
     const updatePointer = () => setFinePointer(mq.matches)
     updatePointer()
     mq.addEventListener('change', updatePointer)

@@ -1,5 +1,3 @@
-import { resume } from '../data/resume'
-
 type CircularStampProps = {
   href?: string
   className?: string
@@ -15,7 +13,7 @@ export function CircularStamp({ href = '#contact', className = '' }: CircularSta
         'group relative flex h-[92px] w-[92px] items-center justify-center rounded-full border border-current/20 transition hover:border-accent/50 no-print',
         className,
       ].join(' ')}
-      aria-label={`Contact ${resume.name}`}
+      aria-label={`${label}↗`}
     >
       <svg
         className="absolute inset-0 h-full w-full stamp-text motion-reduce:animate-none"

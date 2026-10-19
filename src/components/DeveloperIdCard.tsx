@@ -110,7 +110,7 @@ export function DeveloperIdCard() {
                 href={resume.contact.github}
                 target="_blank"
                 rel="noreferrer"
-                className="text-sm text-[#f4efe6] underline-offset-4 transition hover:underline"
+                className="tap-target inline-flex items-center text-sm text-[#f4efe6] underline-offset-4 transition hover:underline"
               >
                 {githubHandle(resume.contact.github)}
               </a>

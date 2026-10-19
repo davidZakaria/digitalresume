@@ -12,7 +12,7 @@
  * See `public/avatar/README.md`.
  */
 /** Bump when replacing unhashed files in `public/avatar/`. */
-const AVATAR_CACHE = 'v=2'
+const AVATAR_CACHE = 'v=3'
 
 export const AVATAR_ASSETS = {
   introWebm: `/avatar/david-intro.webm?${AVATAR_CACHE}`,
@@ -29,6 +29,62 @@ export const AVATAR_INTRO_CAPTION =
   "Hi, I'm David. I'm a software developer. I build responsive web applications, interactive websites and AI-powered platforms."
 
 export const AVATAR_CROSSFADE_MS = 400
+
+/**
+ * Intro gesture cues, verified by scrubbing `david-intro` at 4 fps:
+ * point at ~1.00s; open-palm / present from ~3.05s through ~5.00s.
+ */
+export const INTRO_POINT_AT = 1.0
+export const INTRO_FIX_START = 3.05
+export const INTRO_FIX_STAGGER = 0.085
+export const INTRO_FIX_END = 5.0
+
+export type AvatarIntroClock = {
+  phase: 'poster' | 'intro' | 'loop'
+  time: number
+  hasIntro: boolean
+  introFailed: boolean
+  resetId: number
+}
+
+export const IDLE_INTRO_CLOCK: AvatarIntroClock = {
+  phase: 'poster',
+  time: 0,
+  hasIntro: false,
+  introFailed: false,
+  resetId: 0,
+}
+
+export type AvatarSourcePick = { src: string; type: string }
+
+/** Safari/WebKit often reports empty `canPlayType` for WebM — put MP4 first there. */
+export function orderedVideoSources(
+  webm: { ok: boolean; src: string },
+  mp4: { ok: boolean; src: string },
+): AvatarSourcePick[] {
+  const preferMp4 =
+    typeof document !== 'undefined' &&
+    document.createElement('video').canPlayType('video/webm') === ''
+  const picks: AvatarSourcePick[] = []
+  const push = (item: { ok: boolean; src: string }, type: string) => {
+    if (item.ok) picks.push({ src: item.src, type })
+  }
+  if (preferMp4) {
+    push(mp4, 'video/mp4')
+    push(webm, 'video/webm')
+  } else {
+    push(webm, 'video/webm')
+    push(mp4, 'video/mp4')
+  }
+  return picks
+}
+
+export function markWebkitInline(el: HTMLVideoElement | null) {
+  if (!el) return
+  el.setAttribute('playsinline', '')
+  el.setAttribute('webkit-playsinline', 'true')
+  el.playsInline = true
+}
 
 export type AvatarSources = {
   introWebm: boolean

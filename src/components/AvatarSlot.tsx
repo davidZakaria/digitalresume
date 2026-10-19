@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type MutableRefObject } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import { resume } from '../data/resume'
 import { useMediaQuery } from '../hooks/useMediaQuery'
@@ -7,12 +7,16 @@ import {
   AVATAR_ASSETS,
   AVATAR_CROSSFADE_MS,
   AVATAR_INTRO_CAPTION,
+  markWebkitInline,
+  orderedVideoSources,
   probeAvatarSources,
+  type AvatarIntroClock,
   type AvatarSources,
 } from '../lib/avatarAssets'
 
 type AvatarSlotProps = {
   className?: string
+  clockRef?: MutableRefObject<AvatarIntroClock>
 }
 
 type Phase = 'poster' | 'intro' | 'loop'
@@ -24,7 +28,12 @@ function playQuietly(el: HTMLVideoElement | null) {
   })
 }
 
-export function AvatarSlot({ className = '' }: AvatarSlotProps) {
+function bindInlineVideo(el: HTMLVideoElement | null, store: MutableRefObject<HTMLVideoElement | null>) {
+  store.current = el
+  markWebkitInline(el)
+}
+
+export function AvatarSlot({ className = '', clockRef }: AvatarSlotProps) {
   const reduce = useReducedMotion()
   const saveData = useSaveData()
   const coarsePointer = useMediaQuery('(pointer: coarse)')
@@ -41,16 +50,29 @@ export function AvatarSlot({ className = '' }: AvatarSlotProps) {
   const introRef = useRef<HTMLVideoElement>(null)
   const loopRef = useRef<HTMLVideoElement>(null)
   const fadeTimer = useRef<number>(0)
+  const resetId = useRef(0)
+  const phaseRef = useRef<Phase>('poster')
+
+  const publishClock = useCallback(
+    (partial: Partial<AvatarIntroClock>) => {
+      if (!clockRef) return
+      clockRef.current = { ...clockRef.current, ...partial }
+    },
+    [clockRef],
+  )
 
   useEffect(() => {
     let cancelled = false
     void probeAvatarSources().then((next) => {
-      if (!cancelled) setSources(next)
+      if (cancelled) return
+      setSources(next)
+      const found = Boolean(next.introWebm || next.introMp4)
+      publishClock({ hasIntro: found, introFailed: false })
     })
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [publishClock])
 
   useEffect(() => {
     const el = rootRef.current
@@ -71,6 +93,16 @@ export function AvatarSlot({ className = '' }: AvatarSlotProps) {
   const canAutoplay = Boolean(inView && !coarsePointer && !saveData && !reduce)
   const wantsManualStart = Boolean(coarsePointer || saveData || reduce)
 
+  useEffect(() => {
+    phaseRef.current = phase
+    publishClock({
+      phase,
+      hasIntro,
+      introFailed,
+      resetId: resetId.current,
+    })
+  }, [hasIntro, introFailed, phase, publishClock])
+
   const finishFadeToLoop = useCallback(() => {
     window.clearTimeout(fadeTimer.current)
     setIntroVisible(false)
@@ -81,8 +113,9 @@ export function AvatarSlot({ className = '' }: AvatarSlotProps) {
         intro.pause()
         intro.muted = true
       }
+      publishClock({ phase: 'loop', time: 7.5 })
     }, AVATAR_CROSSFADE_MS)
-  }, [])
+  }, [publishClock])
 
   const goToLoop = useCallback(() => {
     if (!hasLoop) {
@@ -130,18 +163,74 @@ export function AvatarSlot({ className = '' }: AvatarSlotProps) {
     if (!intro) return
     intro.muted = !soundOn
     playQuietly(intro)
-  }, [phase, soundOn])
+
+    let cancelled = false
+    const pushTime = () => {
+      if (cancelled || phaseRef.current !== 'intro') return
+      publishClock({ phase: 'intro', time: intro.currentTime, resetId: resetId.current })
+    }
+
+    const video = intro as HTMLVideoElement & {
+      requestVideoFrameCallback?: (cb: () => void) => number
+      cancelVideoFrameCallback?: (id: number) => void
+    }
+
+    if (typeof video.requestVideoFrameCallback === 'function') {
+      let id = 0
+      const onFrame = () => {
+        pushTime()
+        if (!cancelled && phaseRef.current === 'intro') {
+          id = video.requestVideoFrameCallback!(onFrame)
+        }
+      }
+      id = video.requestVideoFrameCallback(onFrame)
+      return () => {
+        cancelled = true
+        video.cancelVideoFrameCallback?.(id)
+      }
+    }
+
+    let raf = 0
+    const onTime = () => {
+      pushTime()
+      raf = requestAnimationFrame(onTime)
+    }
+    intro.addEventListener('timeupdate', pushTime)
+    raf = requestAnimationFrame(onTime)
+    return () => {
+      cancelled = true
+      intro.removeEventListener('timeupdate', pushTime)
+      cancelAnimationFrame(raf)
+    }
+  }, [phase, publishClock, soundOn])
 
   useEffect(() => {
     if (!mountLoop) return
     playQuietly(loopRef.current)
   }, [mountLoop])
 
+  const playIntroNow = (withSound: boolean, restart: boolean) => {
+    const intro = introRef.current
+    if (!intro) return
+    intro.muted = !withSound
+    if (restart) {
+      try {
+        intro.currentTime = 0
+      } catch {
+        /* some engines throw if metadata is not ready */
+      }
+    }
+    playQuietly(intro)
+  }
+
   const startFromPoster = () => {
     if (hasIntro) {
+      resetId.current += 1
       setSoundOn(true)
       setIntroVisible(true)
       setPhase('intro')
+      publishClock({ phase: 'intro', time: 0, resetId: resetId.current, hasIntro: true })
+      playIntroNow(true, true)
       return
     }
     if (hasLoop) {
@@ -152,30 +241,24 @@ export function AvatarSlot({ className = '' }: AvatarSlotProps) {
   }
 
   const unmuteIntro = () => {
-    const intro = introRef.current
+    resetId.current += 1
     setSoundOn(true)
     setIntroVisible(true)
     setPhase('intro')
-    if (intro) {
-      intro.muted = false
-      intro.currentTime = 0
-      playQuietly(intro)
-    }
+    publishClock({ phase: 'intro', time: 0, resetId: resetId.current, hasIntro: true })
+    playIntroNow(true, true)
   }
 
   const replayIntro = () => {
     window.clearTimeout(fadeTimer.current)
     const loop = loopRef.current
     if (loop) loop.pause()
+    resetId.current += 1
     setSoundOn(true)
     setIntroVisible(true)
     setPhase('intro')
-    const intro = introRef.current
-    if (intro) {
-      intro.muted = false
-      intro.currentTime = 0
-      playQuietly(intro)
-    }
+    publishClock({ phase: 'intro', time: 0, resetId: resetId.current, hasIntro: true })
+    playIntroNow(true, true)
   }
 
   const preloadLoopSoon = () => {
@@ -187,8 +270,20 @@ export function AvatarSlot({ className = '' }: AvatarSlotProps) {
   const showUnmutePill = phase === 'intro' && !soundOn && !wantsManualStart
   const showReplay = (phase === 'loop' || (phase === 'intro' && soundOn)) && hasIntro
   const showCaption = phase === 'intro'
-  const mountIntro = phase === 'intro' || (phase === 'loop' && hasIntro)
+  const mountIntro = Boolean(hasIntro && (phase !== 'poster' || inView || wantsManualStart))
   const videoCoversPoster = phase === 'intro' || phase === 'loop'
+  const introSources = sources
+    ? orderedVideoSources(
+        { ok: sources.introWebm, src: AVATAR_ASSETS.introWebm },
+        { ok: sources.introMp4, src: AVATAR_ASSETS.introMp4 },
+      )
+    : []
+  const loopSources = sources
+    ? orderedVideoSources(
+        { ok: sources.loopWebm, src: AVATAR_ASSETS.loopWebm },
+        { ok: sources.loopMp4, src: AVATAR_ASSETS.loopMp4 },
+      )
+    : []
 
   return (
     <div ref={rootRef} className={['avatar-slot relative mx-auto', className].join(' ')}>
@@ -215,17 +310,20 @@ export function AvatarSlot({ className = '' }: AvatarSlotProps) {
 
         {mountIntro && hasIntro ? (
           <video
-            ref={introRef}
+            ref={(el) => bindInlineVideo(el, introRef)}
             className={[
               'avatar-layer absolute inset-0 h-full w-full object-cover object-center',
               blended ? 'avatar-media-blend' : '',
-              introVisible ? 'avatar-layer-on' : 'avatar-layer-off',
+              phase === 'intro' && introVisible ? 'avatar-layer-on' : 'avatar-layer-off',
             ].join(' ')}
             muted={!soundOn}
             playsInline
-            preload="none"
+            preload={wantsManualStart || inView ? 'metadata' : 'none'}
             poster={poster}
-            onError={() => setIntroFailed(true)}
+            onError={() => {
+              setIntroFailed(true)
+              publishClock({ introFailed: true, hasIntro: false })
+            }}
             onEnded={goToLoop}
             onTimeUpdate={(event) => {
               const el = event.currentTarget
@@ -233,8 +331,9 @@ export function AvatarSlot({ className = '' }: AvatarSlotProps) {
             }}
             aria-label={`${resume.name} introduction`}
           >
-            {sources?.introWebm ? <source src={AVATAR_ASSETS.introWebm} type="video/webm" /> : null}
-            {sources?.introMp4 ? <source src={AVATAR_ASSETS.introMp4} type="video/mp4" /> : null}
+            {introSources.map((item) => (
+              <source key={item.type} src={item.src} type={item.type} />
+            ))}
             <track
               kind="captions"
               srcLang="en"
@@ -247,7 +346,7 @@ export function AvatarSlot({ className = '' }: AvatarSlotProps) {
 
         {mountLoop && hasLoop ? (
           <video
-            ref={loopRef}
+            ref={(el) => bindInlineVideo(el, loopRef)}
             className={[
               'avatar-layer absolute inset-0 h-full w-full object-cover object-center',
               blended ? 'avatar-media-blend' : '',
@@ -261,26 +360,27 @@ export function AvatarSlot({ className = '' }: AvatarSlotProps) {
             aria-hidden={phase !== 'loop'}
             aria-label={`${resume.name} talking avatar`}
           >
-            {sources?.loopWebm ? <source src={AVATAR_ASSETS.loopWebm} type="video/webm" /> : null}
-            {sources?.loopMp4 ? <source src={AVATAR_ASSETS.loopMp4} type="video/mp4" /> : null}
+            {loopSources.map((item) => (
+              <source key={item.type} src={item.src} type={item.type} />
+            ))}
           </video>
         ) : null}
 
         {showPlayOnPoster ? (
-          <button type="button" className="avatar-sound-pill" onClick={startFromPoster}>
+          <button type="button" className="avatar-sound-pill tap-target" onClick={startFromPoster}>
             Play intro
           </button>
         ) : null}
 
         {showUnmutePill ? (
-          <button type="button" className="avatar-sound-pill" onClick={unmuteIntro}>
+          <button type="button" className="avatar-sound-pill tap-target" onClick={unmuteIntro}>
             <span className="avatar-sound-dot" aria-hidden />
             Tap for sound
           </button>
         ) : null}
 
         {showReplay ? (
-          <button type="button" className="avatar-replay" onClick={replayIntro}>
+          <button type="button" className="avatar-replay tap-target" onClick={replayIntro}>
             Replay intro
           </button>
         ) : null}

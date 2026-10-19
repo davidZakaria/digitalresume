@@ -87,6 +87,10 @@
     }
   }
 
+  html {
+    --nav-h: 3.75rem;
+  }
+
   html,
   body {
     overflow-x: clip;
@@ -102,6 +106,11 @@
 
   :focus-visible {
     @apply outline outline-2 outline-offset-2 outline-accent/50;
+  }
+
+  .tap-target {
+    min-height: 44px;
+    min-width: 44px;
   }
 }
 
@@ -343,7 +352,9 @@
     display: inline-flex;
     transform: translateX(-50%);
     align-items: center;
+    justify-content: center;
     gap: 0.45rem;
+    min-height: 44px;
     border: 1px solid rgb(10 10 10 / 0.16);
     background: rgb(244 239 230 / 0.88);
     padding: 0.45rem 0.95rem;
@@ -392,9 +403,12 @@
     top: 0.55rem;
     right: 0.7rem;
     z-index: 3;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
     border: 1px solid rgb(10 10 10 / 0.12);
     background: rgb(244 239 230 / 0.72);
-    padding: 0.28rem 0.55rem;
+    padding: 0.28rem 0.7rem;
     font-family: 'JetBrains Mono', ui-monospace, monospace;
     font-size: 9px;
     letter-spacing: 0.16em;
@@ -430,6 +444,80 @@
     font-style: italic;
     line-height: 1.45;
     color: rgb(10 10 10 / 0.55);
+  }
+
+  .hero-headline-letter {
+    transform-origin: 50% 85%;
+  }
+
+  .hero-headline-shine {
+    pointer-events: none;
+    position: absolute;
+    inset: -8% -4%;
+    opacity: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 28%,
+      rgb(255 255 255 / 0.42) 48%,
+      transparent 68%
+    );
+    background-size: 220% 100%;
+    background-position: 120% 0;
+    mix-blend-mode: soft-light;
+  }
+
+  .hero-headline-shine.is-on {
+    animation: headline-shine 0.7s ease-out forwards;
+  }
+
+  @keyframes headline-shine {
+    0% {
+      opacity: 0;
+      background-position: 120% 0;
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      background-position: -20% 0;
+    }
+  }
+
+  .hero-headline-dust {
+    pointer-events: none;
+    position: absolute;
+    inset: 8% 8% auto;
+    height: 2.4rem;
+  }
+
+  .hero-headline-dust span {
+    position: absolute;
+    bottom: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgb(10 10 10 / 0.22);
+    animation: headline-dust 0.65s ease-out forwards;
+  }
+
+  @keyframes headline-dust {
+    0% {
+      opacity: 0.7;
+      transform: translateY(6px) scale(0.6);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-22px) scale(1.15);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-headline-shine,
+    .hero-headline-dust span {
+      animation: none !important;
+      opacity: 0 !important;
+    }
   }
 
   .dark .avatar-caption {

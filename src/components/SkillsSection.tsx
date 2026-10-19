@@ -59,7 +59,7 @@ export function SkillsSection() {
                   aria-pressed={filter === item.id}
                   onClick={() => setFilter(item.id)}
                   className={[
-                    'border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] transition',
+                    'tap-target inline-flex items-center border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] transition',
                     filter === item.id
                       ? 'border-cream bg-cream text-canvas'
                       : 'border-surface-border text-ink-faint hover:border-cream/40 hover:text-ink',
@@ -81,7 +81,7 @@ export function SkillsSection() {
                     <button
                       type="button"
                       className={[
-                        'skill-tile flex aspect-square w-full flex-col items-center justify-center border px-1.5 py-2 text-center transition',
+                        'skill-tile tap-target flex aspect-square w-full flex-col items-center justify-center border px-1.5 py-2 text-center transition',
                         selected
                           ? 'border-cream bg-cream/10 text-ink'
                           : 'border-surface-border text-ink-soft hover:border-cream/50 hover:text-ink',

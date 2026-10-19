@@ -85,7 +85,7 @@ export function ExperienceSection() {
   return (
     <section
       id="experience"
-      className="section-canvas scroll-mt-24 border-b border-surface-border py-24 md:scroll-mt-28 md:py-32 print:bg-white print:text-ink"
+      className="section-canvas scroll-mt-[var(--nav-h)] border-b border-surface-border py-24 md:py-32 print:bg-white print:text-ink"
       data-nav-theme="dark"
     >
       <div className="mx-auto max-w-6xl px-4 md:px-8">
@@ -102,7 +102,7 @@ export function ExperienceSection() {
           </p>
         </Reveal>
 
-        <div className="sticky top-[57px] z-20 mt-10 border border-surface-border bg-surface-elevated/95 p-4 backdrop-blur-md lg:hidden">
+        <div className="sticky top-[var(--nav-h)] z-20 mt-10 border border-surface-border bg-surface-elevated/95 p-3 backdrop-blur-md sm:p-4 lg:hidden">
           {current ? <TimelinePanel job={current} compact /> : null}
         </div>
 
@@ -127,7 +127,7 @@ export function ExperienceSection() {
                 ref={(node) => {
                   itemRefs.current[index] = node
                 }}
-                className="flex min-h-[58vh] flex-col justify-center py-12 md:min-h-[62vh] md:py-16"
+                className="flex min-h-[42svh] flex-col justify-center py-10 sm:min-h-[50svh] md:min-h-[62svh] md:py-16"
                 initial={reduce ? false : { opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-8%' }}
