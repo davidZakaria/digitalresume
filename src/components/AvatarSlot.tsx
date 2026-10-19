@@ -17,6 +17,7 @@ export function AvatarSlot({ className = '' }: AvatarSlotProps) {
   const [inView, setInView] = useState(false)
   const [manualPlay, setManualPlay] = useState(false)
   const [failed, setFailed] = useState(false)
+  const [posterFailed, setPosterFailed] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -44,7 +45,9 @@ export function AvatarSlot({ className = '' }: AvatarSlotProps) {
   const hasVideo = Boolean(sources && (sources.webm || sources.mp4) && !failed)
   const allowAutoplay = Boolean(hasVideo && inView && !coarsePointer && !saveData && !reduce)
   const shouldMountVideo = hasVideo && inView && (allowAutoplay || manualPlay)
-  const poster = sources?.poster ? AVATAR_ASSETS.poster : AVATAR_ASSETS.placeholderPortrait
+  const useStudioPoster = !posterFailed && (sources === null || sources.poster)
+  const poster = useStudioPoster ? AVATAR_ASSETS.poster : AVATAR_ASSETS.placeholderPortrait
+  const blended = useStudioPoster || hasVideo
 
   useEffect(() => {
     const video = videoRef.current
@@ -59,15 +62,19 @@ export function AvatarSlot({ className = '' }: AvatarSlotProps) {
   const showPlayHint = hasVideo && !allowAutoplay && !manualPlay
 
   return (
-    <div
-      ref={rootRef}
-      className={['avatar-slot relative mx-auto', className].join(' ')}
-    >
-      <div className="relative mx-auto aspect-[4/5] w-36 overflow-hidden border border-canvas/15 bg-canvas/[0.04] md:w-48">
+    <div ref={rootRef} className={['avatar-slot relative mx-auto', className].join(' ')}>
+      <div
+        className={[
+          'avatar-stage relative mx-auto aspect-video w-[min(22rem,90vw)] md:w-[28rem] lg:w-[32rem]',
+          blended ? 'avatar-stage-blend' : 'overflow-hidden border border-canvas/15 bg-canvas/[0.04]',
+        ].join(' ')}
+      >
+        <div className="avatar-spotlight pointer-events-none absolute inset-0" aria-hidden />
+
         {shouldMountVideo ? (
           <video
             ref={videoRef}
-            className="h-full w-full object-contain object-bottom"
+            className={['h-full w-full object-cover object-center', blended ? 'avatar-media-blend' : ''].join(' ')}
             muted
             loop
             playsInline
@@ -84,31 +91,27 @@ export function AvatarSlot({ className = '' }: AvatarSlotProps) {
           <img
             src={poster}
             alt={resume.name}
-            className="h-full w-full object-cover object-top opacity-90"
-            width={280}
-            height={350}
+            className={[
+              'h-full w-full',
+              blended ? 'avatar-media-blend object-cover object-center' : 'object-cover object-top opacity-90',
+            ].join(' ')}
+            width={1280}
+            height={720}
             decoding="async"
+            onError={() => setPosterFailed(true)}
           />
         )}
-
-        {!hasVideo ? (
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-cream/70 via-transparent to-cream/10" />
-        ) : null}
 
         {showPlayHint ? (
           <button
             type="button"
-            className="absolute inset-x-4 bottom-4 border border-canvas/20 bg-cream/80 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-canvas backdrop-blur-sm transition hover:border-canvas/50"
+            className="absolute bottom-3 left-1/2 z-[1] -translate-x-1/2 rounded-full border border-canvas/20 bg-cream/80 px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-canvas backdrop-blur-sm transition hover:border-canvas/50 dark:border-cream/20 dark:bg-canvas/70 dark:text-cream"
             onClick={() => setManualPlay(true)}
           >
             Play avatar
           </button>
         ) : null}
       </div>
-
-      <p className="mt-3 text-center font-mono text-[9px] uppercase tracking-[0.22em] text-canvas/40">
-        {resume.name}
-      </p>
     </div>
   )
 }

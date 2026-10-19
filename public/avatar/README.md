@@ -1,12 +1,12 @@
 # Talking avatar media
 
-Drop the hero talking-avatar files here (same filenames). The site is a static `dist` build — upload this folder next to `index.html` on shared hosting, or add the files before `npm run build`.
+Files in this folder ship with the static `dist` build. Replace them in place (same filenames) if you re-export the loop.
 
-| File | Required | Notes |
-| --- | --- | --- |
-| `david-talking.webm` | Preferred | Transparent / alpha WebM (VP8/VP9 + alpha). Used first on capable browsers. |
-| `david-talking.mp4` | Fallback | H.264 when WebM is missing or unsupported. |
-| `poster.jpg` | Optional | Still frame for first paint and for mobile / Save-Data (no heavy autoplay). |
+| File | Role |
+| --- | --- |
+| `david-talking.webm` | Preferred loop. **Not alpha** — baked cream field + soft radial gradient, 1280×720, muted, 12.4s forward-then-reverse. |
+| `david-talking.mp4` | H.264 fallback of the same cream-backed loop. |
+| `poster.jpg` | Still frame for first paint and for mobile / Save-Data (no heavy autoplay). |
 
 Public URLs after deploy:
 
@@ -14,6 +14,8 @@ Public URLs after deploy:
 - `/avatar/david-talking.mp4`
 - `/avatar/poster.jpg`
 
-Until at least one video file is present, the hero shows a tasteful portrait placeholder. The slot does **not** autoplay on coarse pointers (touch) or when the browser reports Save-Data; those visitors get the poster (or the placeholder) and can tap to play if a video exists.
+The hero does **not** rely on a transparent WebM. Edges are feathered with CSS `mask-image` so the cream field dissolves into the light hero. Dark theme sits the same masked media on a rounded spotlight stage so it never reads as a hard cream box.
 
-Suggested export: muted, looping, ~4–8s, 512–720px tall, no audio track. Keep the file under ~2 MB if you can.
+The slot does **not** autoplay on coarse pointers (touch) or when the browser reports Save-Data; those visitors get the poster and can tap to play.
+
+Current export: muted, looping, 12.4s forward-then-reverse, 1280×720, no audio track.

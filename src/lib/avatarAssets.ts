@@ -1,7 +1,7 @@
 /**
  * Talking-avatar media — drop files at these exact public paths.
  *
- *   public/avatar/david-talking.webm   preferred (alpha / VP9 or VP8)
+ *   public/avatar/david-talking.webm   preferred 12.4s loop (cream field, no alpha)
  *   public/avatar/david-talking.mp4    fallback
  *   public/avatar/poster.jpg           still / mobile poster
  *

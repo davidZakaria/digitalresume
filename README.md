@@ -5,7 +5,7 @@ Animated single-page portfolio built with **Vite**, **React**, **TypeScript**, *
 ## Customize
 
 - **[src/data/resume.ts](src/data/resume.ts)** — Full résumé: name, summary, experience (includes portfolio bullets), education, skills, **and `projects`** (same array powers the Projects section). **HR ERP** and **Talé** use a live URL when `liveUrl` is set or via `.env.local`: `VITE_LIVE_HRERP_URL`, `VITE_LIVE_TALE_URL`. **Arabic Cinema Archive** and **English Platform** stay **GitHub-only** unless you add `liveUrl`.
-- **Talking avatar (hero)** — drop files into **[public/avatar/](public/avatar/README.md)** as `david-talking.webm` (preferred, alpha), `david-talking.mp4` (fallback), and optional `poster.jpg`. Until those exist, the hero shows a portrait placeholder. No heavy autoplay on touch or Save-Data.
+- **Talking avatar (hero)** — files live in **[public/avatar/](public/avatar/README.md)**: `david-talking.webm` (preferred), `david-talking.mp4` (fallback), `poster.jpg`. The source is a cream-backed 16:9 loop (**not alpha**); the hero feathers it with CSS masks and uses a rounded spotlight stage in dark theme. No heavy autoplay on touch or Save-Data.
 - **`index.html`** — Update `<title>`, `meta description`, and **`og:url`** to your real domain after deployment.
 - **`.env.local`** — Optional **`VITE_SITE_URL=https://your-domain.com`** (no trailing slash) so JSON-LD structured data uses your canonical URL when useful.
 
