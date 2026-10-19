@@ -49,7 +49,7 @@ const taleLive = LIVE_TALE_MANUAL || LIVE_TALE_FROM_ENV
 export const resume = {
   name: 'David Samy',
   /** Professional headline under your name */
-  title: 'Full-Stack Software Engineer',
+  title: 'Software Engineer',
   /** Short elevator pitch */
   summary:
     'I design and ship production web applications across real-estate enterprise systems, HR operations, hospitality booking, cultural archives, and education — from PostgreSQL and Prisma backends to polished React and Next.js interfaces.',
@@ -62,22 +62,9 @@ export const resume = {
   },
   experience: [
     {
-      role: 'Full-Stack Developer',
-      company: 'Independent / Portfolio',
-      period: 'Present',
-      highlights: [
-        'HR ERP — employee workflows (leave, excuses, admin dashboards), JWT auth, MongoDB, React front end.',
-        'Talé — hotel booking product with Express/MongoDB API, Next.js App Router UI, OAuth and Paymob-ready payments.',
-        'Arabic Cinema Digital Archive — batch ingestion, Google Vision Arabic OCR, GPT-assisted correction, BullMQ, RTL Next.js archive UX.',
-        'English Learning Platform — LMS-style React/Vite client and Express/MongoDB backend: quizzes, dashboards, bilingual UX.',
-        'Car rental & buying (MERN) — MongoDB models, Express routes/middleware, structured API surface for rental and purchase flows.',
-        'Sorcerer Killer Bot — Discord voice music bot: YouTube search/queue, playback pipeline with ffmpeg/opus and queue controls.',
-        'Additional production sites — j-communities.com and jrs-med.com (live launches and ongoing web presence).',
-      ],
-    },
-    {
       role: 'Software Engineer',
       company: 'New Jersey Developments (NJD Egypt)',
+      // TODO: confirm NJD Egypt employment start date (month / year).
       period: 'Present',
       location: 'Egypt',
       highlights: [
@@ -87,11 +74,36 @@ export const resume = {
         'Ship iterative improvements across SEO, accessibility, and reliability so property launches and corporate updates reach clients without friction.',
       ],
     },
+    {
+      role: 'Software Engineer',
+      company: 'J-Communities Developments',
+      period: '2022 — Present',
+      highlights: [
+        'Own and maintain the public web presence for J-Communities — j-communities.com — including live launches and ongoing updates.',
+        // TODO: confirm additional J-Communities responsibilities, stack, and team context.
+      ],
+    },
+    {
+      role: 'Full-Stack Developer',
+      company: 'Independent / Portfolio',
+      // TODO: confirm independent / portfolio start date.
+      period: 'Present',
+      highlights: [
+        'HR ERP — employee workflows (leave, excuses, admin dashboards), JWT auth, MongoDB, React front end.',
+        'Talé — hotel booking product with Express/MongoDB API, Next.js App Router UI, OAuth and Paymob-ready payments.',
+        'Arabic Cinema Digital Archive — batch ingestion, Google Vision Arabic OCR, GPT-assisted correction, BullMQ, RTL Next.js archive UX.',
+        'English Learning Platform — LMS-style React/Vite client and Express/MongoDB backend: quizzes, dashboards, bilingual UX.',
+        'Car rental & buying (MERN) — MongoDB models, Express routes/middleware, structured API surface for rental and purchase flows.',
+        'Sorcerer Killer Bot — Discord voice music bot: YouTube search/queue, playback pipeline with ffmpeg/opus and queue controls.',
+        'Additional production site — jrs-med.com (live launch and ongoing web presence).',
+      ],
+    },
   ] satisfies ExperienceItem[],
   education: [
     {
       school: 'BUE — The British University in Egypt',
       degree: 'B.Sc. Computer Science',
+      // TODO: confirm degree years and any additional detail (honours, focus).
       period: '',
       detail: '',
     },
@@ -106,11 +118,11 @@ export const resume = {
       items: ['React', 'Next.js', 'Vite', 'Tailwind CSS', 'Framer Motion'],
     },
     {
-      label: 'Backend & data',
+      label: 'Backend & Data',
       items: ['Node.js', 'Express', 'NestJS', 'REST APIs', 'PostgreSQL', 'Prisma', 'MongoDB', 'JWT'],
     },
     {
-      label: 'Platform & tooling',
+      label: 'Platform & Tooling',
       items: ['Docker', 'Git', 'Linux', 'Redis', 'GitHub Actions'],
     },
   ] satisfies SkillGroup[],

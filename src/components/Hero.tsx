@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { resume } from '../data/resume'
+import { AvatarSlot } from './AvatarSlot'
 import { CircularStamp } from './CircularStamp'
 import { ScrollExplore } from './ScrollExplore'
 
@@ -17,6 +18,14 @@ export function Hero() {
         <div className="pointer-events-none absolute inset-0 bg-grid opacity-30" aria-hidden />
         <div className="noise-overlay absolute inset-0" aria-hidden />
 
+        <p
+          className="hero-nameplate pointer-events-none absolute inset-x-0 top-[18%] z-0 select-none text-center font-display font-black uppercase leading-[0.78] tracking-tight text-canvas/[0.07] md:top-[12%]"
+          aria-hidden
+        >
+          David
+          <span className="block">Samy</span>
+        </p>
+
         <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 pb-8 pt-24 md:px-8 md:pb-10 md:pt-28">
           <motion.div
             className="flex items-start justify-between gap-4"
@@ -30,7 +39,16 @@ export function Hero() {
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-canvas/50">Portfolio &amp; CV</p>
           </motion.div>
 
-          <div className="flex flex-1 flex-col items-center justify-center py-8 text-center md:py-12">
+          <div className="flex flex-1 flex-col items-center justify-center py-6 text-center md:py-8">
+            <motion.div
+              className="relative mb-4 md:mb-5"
+              initial={reduce ? false : { opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <AvatarSlot />
+            </motion.div>
+
             <motion.h1
               className="w-full font-display text-display-xl font-black uppercase leading-[0.84] tracking-tight text-canvas"
               initial={reduce ? false : { opacity: 0, y: 40 }}
@@ -49,7 +67,7 @@ export function Hero() {
             </motion.p>
 
             <motion.p
-              className="mt-8 font-mono text-[11px] uppercase tracking-[0.3em] text-canvas/45"
+              className="mt-5 font-mono text-[11px] uppercase tracking-[0.3em] text-canvas/45"
               initial={reduce ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: reduce ? 0 : 0.35, duration: 0.45 }}
@@ -58,7 +76,7 @@ export function Hero() {
             </motion.p>
 
             <motion.p
-              className="mx-auto mt-8 max-w-xl text-pretty text-sm leading-relaxed text-canvas/55 md:text-base"
+              className="mx-auto mt-5 max-w-xl text-pretty text-sm leading-relaxed text-canvas/55 md:text-base"
               initial={reduce ? false : { opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: reduce ? 0 : 0.42, duration: 0.5 }}
@@ -67,7 +85,7 @@ export function Hero() {
             </motion.p>
 
             <motion.div
-              className="mt-9 flex flex-wrap items-center justify-center gap-3"
+              className="mt-6 flex flex-wrap items-center justify-center gap-3"
               initial={reduce ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: reduce ? 0 : 0.5, duration: 0.45 }}

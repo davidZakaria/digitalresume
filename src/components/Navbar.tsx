@@ -71,13 +71,14 @@ export function Navbar() {
     }
 
     const update = () => {
-      const hero = document.getElementById('home')
-      const projects = document.getElementById('projects')
-      const y = window.scrollY + 72
-      const heroBottom = hero ? hero.offsetTop + hero.offsetHeight : 0
-      const projectsTop = projects ? projects.offsetTop : Number.POSITIVE_INFINITY
-      const projectsBottom = projects ? projects.offsetTop + projects.offsetHeight : 0
-      setOnCream(y < heroBottom || (y >= projectsTop && y < projectsBottom))
+      const x = Math.min(window.innerWidth / 2, 640)
+      let themed: Element | null = null
+      for (const y of [128, 176, 240, 320]) {
+        const probe = document.elementFromPoint(x, y)
+        themed = probe?.closest('[data-nav-theme]') ?? null
+        if (themed) break
+      }
+      setOnCream(themed?.getAttribute('data-nav-theme') === 'cream')
     }
 
     update()
