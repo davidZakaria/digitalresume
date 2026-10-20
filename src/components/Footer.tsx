@@ -10,7 +10,7 @@ export function Footer() {
         </p>
         <a
           href={resume.contact.github}
-          className="font-mono text-[10px] uppercase tracking-[0.15em] text-ink-faint transition hover:text-accent print:text-zinc-800"
+          className="tap-target inline-flex items-center font-mono text-[10px] uppercase tracking-[0.15em] text-ink-faint transition hover:text-accent print:text-zinc-800"
         >
           GitHub
         </a>

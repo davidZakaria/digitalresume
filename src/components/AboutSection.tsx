@@ -1,16 +1,8 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { resume } from '../data/resume'
+import { DeveloperIdCard } from './DeveloperIdCard'
 import { Reveal } from './Reveal'
 import { SectionIndex } from './SectionIndex'
-
-const STATS = [
-  { label: 'Status', value: resume.location },
-  { label: 'Focus', value: 'Web apps · APIs · Arabic/RTL' },
-  { label: 'Portfolio', value: `${resume.projects.length} pieces` },
-  { label: 'Stack', value: 'Full-stack' },
-  { label: 'Mindset', value: 'Ship end-to-end' },
-  { label: 'Deployments', value: 'Live client sites' },
-] as const
 
 export function AboutSection() {
   const reduce = useReducedMotion()
@@ -52,30 +44,14 @@ export function AboutSection() {
                 <span className="text-cream">design meets code</span>.
               </h2>
 
-              <blockquote className="mt-8 border-l-2 border-cream/40 py-1 pl-6 text-base leading-relaxed text-ink-soft md:text-lg">
+              <blockquote className="mt-8 border-s-2 border-cream/40 py-1 ps-6 text-base leading-relaxed text-ink-soft md:text-lg">
                 {resume.summary}
               </blockquote>
 
               <p className="mt-6 font-display text-lg font-semibold text-ink">Clear products, built with care.</p>
 
-              <div className="mt-10 grid grid-cols-2 gap-px border border-surface-border bg-surface-border md:grid-cols-3">
-                {STATS.map((stat, i) => (
-                  <motion.div
-                    key={stat.label}
-                    className="bg-canvas p-4 md:p-5"
-                    initial={reduce ? false : { opacity: 0, y: 18 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-8%' }}
-                    transition={{
-                      duration: 0.45,
-                      delay: reduce ? 0 : i * 0.07,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                  >
-                    <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-ink-faint">{stat.label}</p>
-                    <p className="mt-2 text-sm font-medium text-ink md:text-base">{stat.value}</p>
-                  </motion.div>
-                ))}
+              <div className="mt-10">
+                <DeveloperIdCard />
               </div>
 
               <aside className="mt-10 border border-surface-border p-5 md:p-6" aria-label="At a glance">

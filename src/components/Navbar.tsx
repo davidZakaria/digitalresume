@@ -71,13 +71,14 @@ export function Navbar() {
     }
 
     const update = () => {
-      const hero = document.getElementById('home')
-      const projects = document.getElementById('projects')
-      const y = window.scrollY + 72
-      const heroBottom = hero ? hero.offsetTop + hero.offsetHeight : 0
-      const projectsTop = projects ? projects.offsetTop : Number.POSITIVE_INFINITY
-      const projectsBottom = projects ? projects.offsetTop + projects.offsetHeight : 0
-      setOnCream(y < heroBottom || (y >= projectsTop && y < projectsBottom))
+      const x = Math.min(window.innerWidth / 2, 640)
+      let themed: Element | null = null
+      for (const y of [128, 176, 240, 320]) {
+        const probe = document.elementFromPoint(x, y)
+        themed = probe?.closest('[data-nav-theme]') ?? null
+        if (themed) break
+      }
+      setOnCream(themed?.getAttribute('data-nav-theme') === 'cream')
     }
 
     update()
@@ -91,7 +92,7 @@ export function Navbar() {
 
   const linkClass = (id: SectionId) =>
     [
-      'relative px-2 py-1 font-mono text-[11px] uppercase tracking-[0.18em] transition-colors duration-200',
+      'tap-target relative inline-flex items-center px-2 py-1 font-mono text-[11px] uppercase tracking-[0.18em] transition-colors duration-200',
       onCream
         ? active === id
           ? 'text-canvas'
@@ -109,11 +110,11 @@ export function Navbar() {
       ].join(' ')}
     >
       <ScrollProgressBar cream={onCream} />
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 md:px-8">
+      <div className="mx-auto flex min-h-14 max-w-6xl items-center justify-between gap-4 px-4 py-2 md:px-8 md:py-3">
         {isGame ? (
           <Link
             to="/"
-            className="font-script text-2xl text-ink transition hover:text-accent"
+            className="tap-target inline-flex items-center font-script text-2xl text-ink transition hover:text-accent"
             aria-label="Back to résumé home"
           >
             {firstName.toLowerCase()}
@@ -122,28 +123,28 @@ export function Navbar() {
           <a
             href="#"
             className={[
-              'font-script text-2xl transition hover:opacity-80',
+              'tap-target inline-flex items-center font-script text-2xl transition hover:opacity-80',
               onCream ? 'text-canvas' : 'text-ink',
             ].join(' ')}
-            aria-label="Back to top"
+            aria-label={`${firstName.toLowerCase()} — back to top`}
           >
             {firstName.toLowerCase()}
           </a>
         )}
 
-        <nav className="hidden flex-1 items-center justify-center gap-1 md:flex" aria-label="Primary">
+        <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex" aria-label="Primary">
           {isGame ? (
             <>
               <Link
                 to="/"
-                className="px-2 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-faint transition hover:text-accent"
+                className="tap-target inline-flex items-center px-2 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-faint transition hover:text-accent"
               >
                 Résumé
               </Link>
               {!isGamesHub && (
                 <Link
                   to="/game"
-                  className="px-2 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-faint transition hover:text-accent"
+                  className="tap-target inline-flex items-center px-2 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-faint transition hover:text-accent"
                 >
                   Games
                 </Link>
@@ -168,7 +169,7 @@ export function Navbar() {
               <Link
                 to="/game"
                 className={[
-                  'px-2 py-1 font-mono text-[11px] uppercase tracking-[0.18em] transition',
+                  'tap-target inline-flex items-center px-2 py-1 font-mono text-[11px] uppercase tracking-[0.18em] transition',
                   onCream ? 'text-canvas/55 hover:text-canvas' : 'text-ink-faint hover:text-accent',
                 ].join(' ')}
               >
@@ -183,7 +184,7 @@ export function Navbar() {
           <button
             type="button"
             className={[
-              'border px-3 py-2 font-mono text-[11px] uppercase tracking-[0.15em] transition md:hidden',
+              'tap-target inline-flex items-center border px-3 py-2 font-mono text-[11px] uppercase tracking-[0.15em] transition lg:hidden',
               onCream
                 ? 'border-canvas/20 text-canvas hover:border-canvas/50'
                 : 'border-surface-border text-ink hover:border-accent/40',
@@ -202,7 +203,7 @@ export function Navbar() {
           <motion.nav
             id="mobile-nav"
             className={[
-              'border-t px-4 py-4 md:hidden',
+              'border-t px-4 py-4 lg:hidden',
               onCream ? 'border-canvas/15 bg-cream/95' : 'border-surface-border bg-page dark:bg-canvas',
             ].join(' ')}
             aria-label="Mobile primary"
@@ -216,7 +217,7 @@ export function Navbar() {
                 <>
                   <Link
                     to="/"
-                    className="rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-wider text-ink-faint hover:text-accent"
+                    className="tap-target inline-flex items-center rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-wider text-ink-faint hover:text-accent"
                     onClick={() => setOpen(false)}
                   >
                     Résumé
@@ -224,7 +225,7 @@ export function Navbar() {
                   {!isGamesHub && (
                     <Link
                       to="/game"
-                      className="rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-wider text-ink-faint hover:text-accent"
+                      className="tap-target inline-flex items-center rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-wider text-ink-faint hover:text-accent"
                       onClick={() => setOpen(false)}
                     >
                       Games
@@ -237,7 +238,7 @@ export function Navbar() {
                     <a
                       key={l.id}
                       href={`#${l.id}`}
-                      className={`rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-wider ${linkClass(l.id)}`}
+                      className={`tap-target inline-flex items-center rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-wider ${linkClass(l.id)}`}
                       onClick={() => setOpen(false)}
                     >
                       {l.label}
@@ -246,7 +247,7 @@ export function Navbar() {
                   <Link
                     to="/game"
                     className={[
-                      'rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-wider',
+                      'tap-target inline-flex items-center rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-wider',
                       onCream ? 'text-canvas/55 hover:text-canvas' : 'text-ink-faint hover:text-accent',
                     ].join(' ')}
                     onClick={() => setOpen(false)}

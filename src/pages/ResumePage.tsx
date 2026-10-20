@@ -34,10 +34,10 @@ export function ResumePage() {
       <SmoothScroll>
         <SeoJsonLd />
         <CustomCursor />
-        <div className="resume-root relative min-h-screen overflow-x-hidden bg-page print:bg-white">
+        <div className="resume-root relative min-h-dvh bg-page print:bg-white">
           <SkipLink />
           <Navbar />
-          <main id="main-content" tabIndex={-1} className="pt-[57px]">
+          <main id="main-content" tabIndex={-1} className="pt-[var(--nav-h)]">
             <Hero />
             <AboutSection />
             <ExperienceSection />
