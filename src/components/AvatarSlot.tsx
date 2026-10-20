@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type MutableRefObject } from 'react'
+import { useCallback, useEffect, useRef, useState, type MutableRefObject, type ReactNode } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import { resume } from '../data/resume'
 import { useMediaQuery } from '../hooks/useMediaQuery'
@@ -7,6 +7,7 @@ import {
   AVATAR_ASSETS,
   AVATAR_CROSSFADE_MS,
   AVATAR_INTRO_CAPTION,
+  INTRO_DURATION,
   markWebkitInline,
   orderedVideoSources,
   probeAvatarSources,
@@ -17,7 +18,9 @@ import {
 type AvatarSlotProps = {
   className?: string
   clockRef?: MutableRefObject<AvatarIntroClock>
+  stageRef?: MutableRefObject<HTMLDivElement | null>
   onCaption?: (caption: string) => void
+  children?: ReactNode
 }
 
 type Phase = 'poster' | 'intro' | 'loop'
@@ -34,7 +37,7 @@ function bindInlineVideo(el: HTMLVideoElement | null, store: MutableRefObject<HT
   markWebkitInline(el)
 }
 
-export function AvatarSlot({ className = '', clockRef, onCaption }: AvatarSlotProps) {
+export function AvatarSlot({ className = '', clockRef, stageRef, onCaption, children }: AvatarSlotProps) {
   const reduce = useReducedMotion()
   const saveData = useSaveData()
   const coarsePointer = useMediaQuery('(pointer: coarse)')
@@ -47,6 +50,8 @@ export function AvatarSlot({ className = '', clockRef, onCaption }: AvatarSlotPr
   const [posterFailed, setPosterFailed] = useState(false)
   const [introFailed, setIntroFailed] = useState(false)
   const [loopFailed, setLoopFailed] = useState(false)
+  const [grabbing, setGrabbing] = useState(false)
+  const grabbingRef = useRef(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const introRef = useRef<HTMLVideoElement>(null)
   const loopRef = useRef<HTMLVideoElement>(null)
@@ -102,6 +107,10 @@ export function AvatarSlot({ className = '', clockRef, onCaption }: AvatarSlotPr
       introFailed,
       resetId: resetId.current,
     })
+    if (phase !== 'intro' && grabbingRef.current) {
+      grabbingRef.current = false
+      setGrabbing(false)
+    }
   }, [hasIntro, introFailed, phase, publishClock])
 
   const finishFadeToLoop = useCallback(() => {
@@ -114,7 +123,7 @@ export function AvatarSlot({ className = '', clockRef, onCaption }: AvatarSlotPr
         intro.pause()
         intro.muted = true
       }
-      publishClock({ phase: 'loop', time: 7.5 })
+      publishClock({ phase: 'loop', time: INTRO_DURATION })
     }, AVATAR_CROSSFADE_MS)
   }, [publishClock])
 
@@ -168,13 +177,22 @@ export function AvatarSlot({ className = '', clockRef, onCaption }: AvatarSlotPr
     let cancelled = false
     const pushTime = () => {
       if (cancelled || phaseRef.current !== 'intro') return
-      publishClock({ phase: 'intro', time: intro.currentTime, resetId: resetId.current })
+      const time = intro.currentTime
+      publishClock({ phase: 'intro', time, resetId: resetId.current })
+      const nextGrab = time >= 4.2 && time <= 7.15
+      if (grabbingRef.current !== nextGrab) {
+        grabbingRef.current = nextGrab
+        setGrabbing(nextGrab)
+      }
     }
 
     const video = intro as HTMLVideoElement & {
       requestVideoFrameCallback?: (cb: () => void) => number
       cancelVideoFrameCallback?: (id: number) => void
     }
+
+    intro.addEventListener('seeked', pushTime)
+    intro.addEventListener('timeupdate', pushTime)
 
     if (typeof video.requestVideoFrameCallback === 'function') {
       let id = 0
@@ -187,6 +205,8 @@ export function AvatarSlot({ className = '', clockRef, onCaption }: AvatarSlotPr
       id = video.requestVideoFrameCallback(onFrame)
       return () => {
         cancelled = true
+        intro.removeEventListener('seeked', pushTime)
+        intro.removeEventListener('timeupdate', pushTime)
         video.cancelVideoFrameCallback?.(id)
       }
     }
@@ -196,10 +216,10 @@ export function AvatarSlot({ className = '', clockRef, onCaption }: AvatarSlotPr
       pushTime()
       raf = requestAnimationFrame(onTime)
     }
-    intro.addEventListener('timeupdate', pushTime)
     raf = requestAnimationFrame(onTime)
     return () => {
       cancelled = true
+      intro.removeEventListener('seeked', pushTime)
       intro.removeEventListener('timeupdate', pushTime)
       cancelAnimationFrame(raf)
     }
@@ -293,9 +313,12 @@ export function AvatarSlot({ className = '', clockRef, onCaption }: AvatarSlotPr
   return (
     <div ref={rootRef} className={['avatar-slot relative mx-auto', className].join(' ')}>
       <div
+        ref={(el) => {
+          if (stageRef) stageRef.current = el
+        }}
         className={[
-          'avatar-stage relative mx-auto aspect-video w-[min(22rem,90vw)] md:w-[28rem] lg:w-[32rem]',
-          blended ? 'avatar-stage-blend' : 'overflow-hidden border border-canvas/15 bg-canvas/[0.04]',
+          'avatar-stage relative mx-auto aspect-video w-[min(22rem,90vw)] overflow-visible md:w-[28rem] lg:w-[32rem]',
+          blended ? 'avatar-stage-blend' : 'border border-canvas/15 bg-canvas/[0.04]',
         ].join(' ')}
       >
         <div className="avatar-spotlight pointer-events-none absolute inset-0" aria-hidden />
@@ -371,14 +394,16 @@ export function AvatarSlot({ className = '', clockRef, onCaption }: AvatarSlotPr
           </video>
         ) : null}
 
+        {children}
+
         {showPlayOnPoster ? (
           <button type="button" className="avatar-sound-pill tap-target" onClick={startFromPoster}>
             Play intro
           </button>
         ) : null}
 
-        {showUnmutePill ? (
-          <button type="button" className="avatar-sound-pill tap-target" onClick={unmuteIntro}>
+        {showUnmutePill && !grabbing ? (
+          <button type="button" className="avatar-sound-pill avatar-sound-pill-top tap-target" onClick={unmuteIntro}>
             <span className="avatar-sound-dot" aria-hidden />
             Tap for sound
           </button>

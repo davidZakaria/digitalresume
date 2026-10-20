@@ -1,7 +1,7 @@
 /**
  * Talking-avatar media — drop files at these exact public paths.
  *
- *   public/avatar/david-intro.webm     7.5s voiced intro (cream field, no alpha)
+ *   public/avatar/david-intro.webm     13s voiced intro (cream field, no alpha)
  *   public/avatar/david-intro.mp4      intro fallback
  *   public/avatar/david-intro.vtt      captions for the spoken line
  *   public/avatar/david-talking.webm   12.4s silent loop (cream field, no alpha)
@@ -12,7 +12,7 @@
  * See `public/avatar/README.md`.
  */
 /** Bump when replacing unhashed files in `public/avatar/`. */
-const AVATAR_CACHE = 'v=3'
+const AVATAR_CACHE = 'v=4'
 
 export const AVATAR_ASSETS = {
   introWebm: `/avatar/david-intro.webm?${AVATAR_CACHE}`,
@@ -31,13 +31,13 @@ export const AVATAR_INTRO_CAPTION =
 export const AVATAR_CROSSFADE_MS = 400
 
 /**
- * Intro gesture cues, verified by scrubbing `david-intro` at 4 fps:
- * point at ~1.00s; open-palm / present from ~3.05s through ~5.00s.
+ * Intro grab cues from `david-intro` (13s). Hands rise ~4.05s, bar
+ * must stay covered 4.80–6.30s, release ~6.70s.
  */
-export const INTRO_POINT_AT = 1.0
-export const INTRO_FIX_START = 3.05
-export const INTRO_FIX_STAGGER = 0.085
-export const INTRO_FIX_END = 5.0
+export const INTRO_FIX_START = 4.8
+export const INTRO_FIX_STAGGER = 0.04
+export const INTRO_FIX_END = 6.3
+export const INTRO_DURATION = 13
 
 export type AvatarIntroClock = {
   phase: 'poster' | 'intro' | 'loop'

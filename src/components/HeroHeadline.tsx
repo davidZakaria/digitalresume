@@ -1,14 +1,10 @@
 import { useEffect, useRef, useState, type MutableRefObject } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
-import {
-  INTRO_FIX_START,
-  INTRO_FIX_STAGGER,
-  type AvatarIntroClock,
-} from '../lib/avatarAssets'
+import { type AvatarIntroClock } from '../lib/avatarAssets'
+import { coverMaskFor, resolveHeadlinePose, sampleGripBar } from '../lib/introGrip'
 
 const LINE_ONE = 'FULL-STACK'
 const LINE_TWO = 'ENGINEER'
-const LETTERS = [...LINE_ONE, ...LINE_TWO]
 const LINE_ONE_LEN = LINE_ONE.length
 
 /** Extra crooked offsets for a couple of hanging letters. */
@@ -22,97 +18,153 @@ type HeroHeadlineProps = {
   clockRef: MutableRefObject<AvatarIntroClock>
 }
 
-function countFixed(time: number): number {
-  if (time < INTRO_FIX_START) return 0
-  return Math.min(LETTERS.length, Math.floor((time - INTRO_FIX_START) / INTRO_FIX_STAGGER) + 1)
-}
-
 export function HeroHeadline({ clockRef }: HeroHeadlineProps) {
   const reduce = useReducedMotion()
-  const [fixedCount, setFixedCount] = useState(0)
-  const [fxOn, setFxOn] = useState(false)
+  const wordRef = useRef<HTMLSpanElement>(null)
+  const maskRef = useRef<HTMLSpanElement>(null)
   const lastReset = useRef(0)
   const fxArmed = useRef(true)
+  const lettersFixedRef = useRef(false)
+  const stateRef = useRef<'crooked' | 'held' | 'fixed'>('crooked')
+  const [fxOn, setFxOn] = useState(false)
+  const [lettersFixed, setLettersFixed] = useState(false)
+  const [state, setState] = useState<'crooked' | 'held' | 'fixed'>('crooked')
 
   useEffect(() => {
     let frame = 0
+    let fxTimer = 0
 
     const sync = () => {
       const clock = clockRef.current
       if (clock.resetId !== lastReset.current) {
         lastReset.current = clock.resetId
         fxArmed.current = true
+        lettersFixedRef.current = false
+        stateRef.current = 'crooked'
         setFxOn(false)
-        setFixedCount(0)
+        setLettersFixed(false)
+        setState('crooked')
       }
 
       const skipMotion = Boolean(reduce || !clock.hasIntro || clock.introFailed)
+      const word = wordRef.current
+      const mask = maskRef.current
+
       if (skipMotion) {
-        setFixedCount(LETTERS.length)
-        setFxOn(false)
+        if (!lettersFixedRef.current) {
+          lettersFixedRef.current = true
+          setLettersFixed(true)
+        }
+        if (stateRef.current !== 'fixed') {
+          stateRef.current = 'fixed'
+          setState('fixed')
+        }
+        if (word) {
+          word.style.left = '50%'
+          word.style.top = '90%'
+          word.style.width = '120%'
+          word.style.transform = 'translate(-50%, -50%)'
+        }
+        if (mask) mask.style.opacity = '0'
         frame = requestAnimationFrame(sync)
         return
       }
 
-      const applied =
-        clock.phase === 'poster' ? 0 : clock.phase === 'loop' ? LETTERS.length : countFixed(clock.time)
+      const time = clock.phase === 'intro' ? clock.time : clock.phase === 'loop' ? 13 : 0
+      const pose = resolveHeadlinePose(time, clock.phase)
 
-      setFixedCount((prev) => (prev === applied ? prev : applied))
+      if (word) {
+        word.style.left = `${pose.cx * 100}%`
+        word.style.top = `${pose.cy * 100}%`
+        word.style.width = `${pose.width * 100}%`
+        word.style.transform = `translate(-50%, -50%) rotate(${pose.rotate}deg)`
+      }
 
-      if (applied > 0 && fxArmed.current) {
+      if (mask) {
+        const bar = clock.phase === 'intro' ? sampleGripBar(clock.time) : null
+        if (bar && pose.cover > 0) {
+          const box = coverMaskFor(bar)
+          mask.style.opacity = String(pose.cover)
+          mask.style.left = `${box.x * 100}%`
+          mask.style.top = `${box.y * 100}%`
+          mask.style.width = `${box.w * 100}%`
+          mask.style.height = `${box.h * 100}%`
+        } else {
+          mask.style.opacity = '0'
+        }
+      }
+
+      if (lettersFixedRef.current !== pose.lettersFixed) {
+        lettersFixedRef.current = pose.lettersFixed
+        setLettersFixed(pose.lettersFixed)
+      }
+
+      const nextState = pose.released ? 'fixed' : pose.grabbing ? 'held' : 'crooked'
+      if (stateRef.current !== nextState) {
+        stateRef.current = nextState
+        setState(nextState)
+      }
+
+      if (pose.released && fxArmed.current) {
         fxArmed.current = false
         setFxOn(true)
-        window.setTimeout(() => setFxOn(false), 720)
+        window.clearTimeout(fxTimer)
+        fxTimer = window.setTimeout(() => setFxOn(false), 720)
       }
 
       frame = requestAnimationFrame(sync)
     }
 
     frame = requestAnimationFrame(sync)
-    return () => cancelAnimationFrame(frame)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.clearTimeout(fxTimer)
+    }
   }, [clockRef, reduce])
 
   const skipMotion = Boolean(reduce || !clockRef.current.hasIntro || clockRef.current.introFailed)
-  const lineStraight = skipMotion || fixedCount > 0
-  const state = skipMotion || fixedCount >= LETTERS.length ? 'fixed' : fixedCount > 0 ? 'fixing' : 'crooked'
 
   return (
-    <h1
-      className="hero-headline relative w-full font-display font-black uppercase leading-[0.84] tracking-tight text-canvas"
-      data-headline-state={state}
-    >
-      <span className="sr-only">Full-Stack Engineer</span>
-      <motion.span
-        className="hero-headline-shake relative block"
-        animate={fxOn ? { x: [0, -5, 4, -2, 0] } : { x: 0 }}
-        transition={{ duration: 0.28, ease: 'easeOut' }}
-        aria-hidden
+    <div className="hero-headline-layer pointer-events-none absolute inset-0 z-[4] overflow-visible" data-headline-state={state}>
+      <span ref={maskRef} className="hero-headline-mask" aria-hidden />
+      <h1
+        className="hero-headline relative h-full w-full font-display font-black uppercase leading-[0.84] tracking-tight text-canvas"
+        data-headline-state={state}
       >
-        <motion.span
-          className="hero-headline-line block origin-[50%_80%]"
-          animate={lineStraight ? { rotate: 0, x: 0 } : { rotate: -6.5, x: -18 }}
-          transition={{ type: 'spring', stiffness: 280, damping: 16, mass: 0.7 }}
+        <span className="sr-only">Full-Stack Engineer</span>
+        <span
+          ref={wordRef}
+          className="hero-headline-word absolute left-1/2 top-[86%] block w-[120%] -translate-x-1/2 -translate-y-1/2"
+          aria-hidden
         >
-          <span className="block text-display-xl">
-            {LINE_ONE.split('').map((ch, i) => (
-              <HeadlineLetter key={`a${i}`} ch={ch} index={i} fixed={skipMotion || i < fixedCount} />
-            ))}
-          </span>
-          <span className="mt-0 block text-display-lg font-bold">
-            {LINE_TWO.split('').map((ch, i) => (
-              <HeadlineLetter
-                key={`b${i}`}
-                ch={ch}
-                index={LINE_ONE_LEN + i}
-                fixed={skipMotion || LINE_ONE_LEN + i < fixedCount}
-              />
-            ))}
-          </span>
-        </motion.span>
-        <span className={['hero-headline-shine', fxOn ? 'is-on' : ''].join(' ')} />
-        {fxOn ? <HeadlineDust /> : null}
-      </motion.span>
-    </h1>
+          <motion.span
+            className="hero-headline-shake relative block"
+            animate={fxOn ? { x: [0, -5, 4, -2, 0] } : { x: 0 }}
+            transition={{ duration: 0.28, ease: 'easeOut' }}
+          >
+            <span className="hero-headline-line block origin-[50%_80%]">
+              <span className="hero-headline-row hero-headline-row-one block">
+                {LINE_ONE.split('').map((ch, i) => (
+                  <HeadlineLetter key={`a${i}`} ch={ch} index={i} fixed={skipMotion || lettersFixed} />
+                ))}
+              </span>
+              <span className="hero-headline-row hero-headline-row-two block">
+                {LINE_TWO.split('').map((ch, i) => (
+                  <HeadlineLetter
+                    key={`b${i}`}
+                    ch={ch}
+                    index={LINE_ONE_LEN + i}
+                    fixed={skipMotion || lettersFixed}
+                  />
+                ))}
+              </span>
+            </span>
+            <span className={['hero-headline-shine', fxOn ? 'is-on' : ''].join(' ')} />
+            {fxOn ? <HeadlineDust /> : null}
+          </motion.span>
+        </span>
+      </h1>
+    </div>
   )
 }
 

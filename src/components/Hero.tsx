@@ -46,21 +46,14 @@ export function Hero() {
 
           <div className="flex flex-1 flex-col items-center justify-center py-6 text-center md:py-8">
             <motion.div
-              className="relative z-[1] mb-0 md:-mb-2"
+              className="hero-avatar-stack relative z-[1] mb-0 w-full"
               initial={reduce ? false : { opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             >
-              <AvatarSlot clockRef={clockRef} onCaption={setCaption} />
-            </motion.div>
-
-            <motion.div
-              className="hero-headline-wrap relative z-[2] -mt-2 w-full overflow-x-clip md:-mt-8"
-              initial={reduce ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.45, delay: reduce ? 0 : 0.08 }}
-            >
-              <HeroHeadline clockRef={clockRef} />
+              <AvatarSlot clockRef={clockRef} onCaption={setCaption}>
+                <HeroHeadline clockRef={clockRef} />
+              </AvatarSlot>
             </motion.div>
             {caption ? (
               <p className="avatar-caption" aria-hidden>
