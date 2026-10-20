@@ -57,14 +57,24 @@ export const IDLE_INTRO_CLOCK: AvatarIntroClock = {
 
 export type AvatarSourcePick = { src: string; type: string }
 
-/** Safari/WebKit often reports empty `canPlayType` for WebM — put MP4 first there. */
+function preferMp4Source(): boolean {
+  if (typeof document === 'undefined') return false
+  const webm = document.createElement('video').canPlayType('video/webm')
+  if (webm === '') return true
+  const ua = navigator.userAgent
+  const iOS =
+    /iPad|iPhone|iPod/i.test(ua) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  const safari = /Safari/i.test(ua) && !/Chrome|Chromium|Android|Edg|OPR|Firefox/i.test(ua)
+  return iOS || safari
+}
+
+/** Safari/iOS still flake on WebM even when `canPlayType` is "maybe" — MP4 first there. */
 export function orderedVideoSources(
   webm: { ok: boolean; src: string },
   mp4: { ok: boolean; src: string },
 ): AvatarSourcePick[] {
-  const preferMp4 =
-    typeof document !== 'undefined' &&
-    document.createElement('video').canPlayType('video/webm') === ''
+  const preferMp4 = preferMp4Source()
   const picks: AvatarSourcePick[] = []
   const push = (item: { ok: boolean; src: string }, type: string) => {
     if (item.ok) picks.push({ src: item.src, type })

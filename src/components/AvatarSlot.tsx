@@ -397,7 +397,7 @@ export function AvatarSlot({ className = '', clockRef, stageRef, onCaption, chil
         {children}
 
         {showPlayOnPoster ? (
-          <button type="button" className="avatar-sound-pill tap-target" onClick={startFromPoster}>
+          <button type="button" className="avatar-sound-pill avatar-sound-pill-top tap-target" onClick={startFromPoster}>
             Play intro
           </button>
         ) : null}
